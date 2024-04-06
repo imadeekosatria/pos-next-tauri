@@ -51,7 +51,7 @@ const Produk = ({ cart, data }) => {
     }
     return (
         <>
-            <div className="bg-white shadow-lg w-full h-max rounded-xl p-4 relative">
+            <div className="bg-white shadow-lg w-full h-max rounded-xl p-4 relative animate-slide-up">
                 <Image src={food} alt="produk1" style={{width: '100%', maxHeight: '8rem', objectFit: "cover"}} loading="lazy" className="rounded-lg shadow-lg"/>
                 <button className="bg-blue-700 p-2 rounded-full absolute top-2 right-2 hover:bg-blue-600" onClick={ handleAddToCart }>
                     <ShoppingCart className="fill-slate-50"/>

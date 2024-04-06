@@ -3,26 +3,23 @@ import { CartDialog, CartItems, Buyer } from "@/app/beranda/layout";
 import { useContext, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis, faTrashCan, faPlus, faMinus, faTicket } from "@fortawesome/free-solid-svg-icons";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
+import { faXmark, faTrashCan, faPlus, faMinus, faTicket } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import food from '@/public/images/food.jpg';
 import {
     Dialog,
     DialogContent,
     DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-  } from "@/components/ui/dialog"
+} from "@/components/ui/dialog"
 import { Button } from "./ui/button";
-  
+import { DialogClose } from "@radix-ui/react-dialog";
 
-const formatedCurency = (number)=>{
+
+const formatedCurency = (number) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(number)
 }
 
@@ -30,7 +27,7 @@ const Cart = () => {
     const { showCart, setShowCart } = useContext(CartDialog);
     const { cartItems, setCartItems } = useContext(CartItems);
     const { pembeli, setPembeli } = useContext(Buyer);
-    
+
     const [isCheckout, setIscheckout] = useState(false);
     const [total, setTotal] = useState(0);
     const formattedDate = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -40,7 +37,7 @@ const Cart = () => {
         setTotal(newTotal);
     }, [cartItems]);
 
-    
+
     const handleCheckout = async () => {
         if (pembeli) {
             const data = {
@@ -75,26 +72,21 @@ const Cart = () => {
     };
     return (
         <>
-            <div className={cn(`${showCart ? 'bg-white w-full col-span-3 h-screen p-2 2xl:p-6 relative' : 'hidden'}`)}>
+            <div className={cn(`${showCart ? 'bg-white w-full col-span-3 h-screen p-2 2xl:p-6 relative animate-slide-right' : 'hidden'}`)}>
                 <div className="flex flex-col gap-y-4">
-                    <div className="flex justify-between items-center pr-6">
+                    <div className="flex justify-between items-center pl-2">
                         <span className="text-2xl font-semibold">Pesanan saat ini</span>
-                        <Popover>
-                            <PopoverTrigger><FontAwesomeIcon icon={faEllipsis} /></PopoverTrigger>
-                            <PopoverContent className={"w-fit"} hideWhenDetached={true}>
-                                <button onClick={() => { setShowCart(!showCart) }}>Batal</button>
-                            </PopoverContent>
-                        </Popover>
+                        <button className="" onClick={() => { setShowCart(!showCart) }}><FontAwesomeIcon icon={faXmark} fixedWidth style={{color:'#0f172a'}} size="xl"/></button>
                     </div>
-                    <div className="flex flex-col gap-y-2 text-xs 2xl:text-base font-medium">
+                    <div className="flex flex-col gap-y-2 text-xs 2xl:text-base font-medium pl-2">
                         <span >Tanggal : {formattedDate}</span>
                         <span >Code : 20240322</span>
                     </div>
-                    <div className="2xl:h-[30rem] h-48 overflow-y-auto hoverable py-2 pr-4">
+                    <div className="2xl:h-[30rem] h-[17rem] overflow-y-auto hoverable py-2 pr-4">
                         {cartItems && cartItems.length > 0 ? (
                             cartItems.map((item, index) => {
                                 return (
-                                    <CartItem key={index} items={{item, cartItems, setCartItems}}/>
+                                    <CartItem key={index} items={{ item, cartItems, setCartItems }} />
                                 )
                             })
                         ) : (
@@ -105,39 +97,39 @@ const Cart = () => {
                     </div>
                 </div>
                 <div className="flex flex-col gap-y-4 w-11/12 rounded-lg absolute bottom-4">
-                        <div className="flex items-center px-1 2xl:px-2 justify-between relative w-full shadow-lg py-1 rounded-lg">
-                            <FontAwesomeIcon icon={faTicket} size="xl"/>
-                            <form action="" method="post" className="flex gap-x-2">
-                                <input type="text" name="voucher" id="voucher" placeholder="Masukkan kode voucher" className="focus:outline-slate-400 px-2 w-44 2xl:w-72"/>
-                                <button type="submit" className="bg-blue-700 hover:bg-blue-600 text-white text-xs 2xl:text-base p-1 font-semibold 2xl:font-normal 2xl:px-2 2xl:py-1.5 rounded-md">Gunakan</button>
-                            </form>
-                        </div>
-                        <div className="shadow-lg p-2 2xl:p-4 divide-y divide-dashed rounded-lg">
-                            <div className="pb-4 flex flex-col gap-y-1.5 2xl:gap-y-2.5">
-                                <div className="flex justify-between">
-                                    <span>Subtotal</span>
-                                    <span>{formatedCurency(total)}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>Diskon</span>
-                                    <span className="text-red-400">-Rp 10000</span>
-                                </div>
+                    {/* <div className="bg-white flex items-center px-1 2xl:px-2 justify-between relative w-full py-0.5 rounded-lg">
+                        <FontAwesomeIcon icon={faTicket} size="xl" />
+                        <form action="" method="post" className="flex gap-x-2">
+                            <input type="text" name="voucher" id="voucher" placeholder="Masukkan kode voucher" className="focus:outline-slate-400 px-2 w-44 2xl:w-72" />
+                            <button type="submit" className="bg-blue-700 hover:bg-blue-600 text-white text-xs 2xl:text-base p-1 font-semibold 2xl:font-normal 2xl:px-2 2xl:py-1.5 rounded-md">Gunakan</button>
+                        </form>
+                    </div> */}
+                    <div className="p-2 2xl:p-4 divide-y-2 divide-slate-500 divide-dashed rounded-lg bg-white">
+                        <div className="pb-4 flex flex-col gap-y-1.5 2xl:gap-y-2.5">
+                            <div className="flex justify-between">
+                                <span>Subtotal</span>
+                                <span>{formatedCurency(total)}</span>
                             </div>
-                            <div className="flex justify-between pt-4">
-                                <span>Total</span>
-                                <span>Rp 140.000</span>
+                            <div className="flex justify-between">
+                                <span>Diskon</span>
+                                <span className="text-red-400">-Rp 10000</span>
                             </div>
                         </div>
-                        <button className="bg-blue-700 p-4 w-full text-2xl text-white font-medium rounded-lg" onClick={handleCheckout}>Cetak Pesanan</button>
+                        <div className="flex justify-between pt-4">
+                            <span>Total</span>
+                            <span>Rp 140.000</span>
+                        </div>
+                    </div>
+                    <button className="bg-blue-700 p-4 w-full text-2xl text-white font-medium rounded-lg" onClick={handleCheckout}>Cetak Pesanan</button>
                 </div>
             </div>
-            <DialogCheckout isOpen={{isCheckout, setIscheckout, setPembeli}}/>
+            <DialogCheckout isOpen={{ isCheckout, setIscheckout, setPembeli }} />
         </>
     )
 }
 
-const CartItem = ({items})=>{
-    const {item, cartItems, setCartItems} = items;
+const CartItem = ({ items }) => {
+    const { item, cartItems, setCartItems } = items;
     const [itemCount, setItemCount] = useState(item.qty);
     const [open, setOpen] = useState(false);
 
@@ -178,43 +170,44 @@ const CartItem = ({items})=>{
 
     return (
         <>
-            <div className="shadow-lg relative rounded-lg p-2.5 animate-slide-up mb-4">
-                <button className="absolute bg-blue-700 -top-2 -right-2.5 px-1.5 py-1 2xl:px-2.5 2xl:py-2 rounded-full hover:bg-blue-600" onClick={()=> handleRemove(item.id, item.price)}>
-                    <FontAwesomeIcon icon={faTrashCan} style={{color: '#ffffff'}} fixedWidth/>
+            <div className="shadow-lg relative rounded-lg p-2.5 animate-slide-up mb-4 ">
+                <button className="absolute bg-red-500 -top-2 -right-2.5 px-1.5 py-1 2xl:px-2.5 2xl:py-2 rounded-full hover:bg-blue-600" onClick={() => handleRemove(item.id, item.price)}>
+                    <FontAwesomeIcon icon={faTrashCan} style={{ color: '#ffffff' }} fixedWidth />
                 </button>
                 <div className="flex gap-x-3 w-full">
                     <div className="2xl:w-20 w-16">
-                        <Image src={food} alt="produk1" style={{width: '100%'}} className="rounded-xl"/>
+                        <Image src={food} alt="produk1" style={{ width: '100%' }} className="rounded-xl" />
                     </div>
                     <div className="flex flex-col relative w-full gap-y-2 2xl:gap-y-0">
                         <span className="font-semibold text-sm">{item.name}</span>
                         <span className="text-xs hidden 2xl:block">{item.category}</span>
                         <div className="2xl:absolute 2xl:bottom-0 flex gap-x-3 justify-between items-end w-full">
                             <span className="text-xs 2xl:text-base font-bold text-blue-700">{formatedCurency(item.price)}</span>
-                            <div className="flex w-20 justify-between">
+                            <div className="flex w-28 justify-between">
+                                <button className="bg-slate-300 rounded-md px-1 hover:bg-slate-200"><FontAwesomeIcon icon={faTicket}/></button>
                                 <button className="bg-slate-300 rounded-md px-1 hover:bg-slate-200" onClick={minus}><FontAwesomeIcon icon={faMinus} /></button>
                                 <span>{itemCount}</span>
-                                <button className="bg-blue-700 hover:bg-blue-600 rounded-md px-1" onClick={plus}><FontAwesomeIcon icon={faPlus} style={{color: '#ffffff'}}/></button>
+                                <button className="bg-blue-700 hover:bg-blue-600 rounded-md px-1" onClick={plus}><FontAwesomeIcon icon={faPlus} style={{ color: '#ffffff' }} /></button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <DialogDelete isOpen={{open, setOpen, handleRemove}} item={{id:item.id, price:item.price}}/>
+            <DialogDelete isOpen={{ open, setOpen, handleRemove }} item={{ id: item.id, price: item.price }} />
         </>
     )
 }
 
 
-const DialogDelete = ({isOpen, item})=>{
-    const {open, setOpen, handleRemove} = isOpen;
+const DialogDelete = ({ isOpen, item }) => {
+    const { open, setOpen, handleRemove } = isOpen;
     const hapus = () => {
         setOpen(!open);
         handleRemove(item.id, item.price);
     }
-    return(
+    return (
         <>
-            <Dialog open={open} onOpenChange={()=>setOpen(!open)}>
+            <Dialog open={open} onOpenChange={() => setOpen(!open)}>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>
@@ -225,7 +218,7 @@ const DialogDelete = ({isOpen, item})=>{
                         </DialogDescription>
                     </DialogHeader>
                     <div className="flex justify-end gap-x-4">
-                        <Button onClick={()=>setOpen(!open)}>Batal</Button>
+                        <Button onClick={() => setOpen(!open)}>Batal</Button>
                         <Button onClick={hapus} variant="destructive">Hapus</Button>
                     </div>
                 </DialogContent>
@@ -234,8 +227,8 @@ const DialogDelete = ({isOpen, item})=>{
     )
 }
 
-const DialogCheckout = ({isOpen})=>{
-    const {isCheckout, setIscheckout, setPembeli} = isOpen;
+const DialogCheckout = ({ isOpen }) => {
+    const { isCheckout, setIscheckout, setPembeli } = isOpen;
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
@@ -254,27 +247,29 @@ const DialogCheckout = ({isOpen})=>{
     }
     return (
         <>
-            <Dialog open={isCheckout} onOpenChange={()=>setIscheckout(!isCheckout)}>
+            <Dialog open={isCheckout} onOpenChange={() => setIscheckout(!isCheckout)}>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>
                             Checkout
                         </DialogTitle>
                         <DialogDescription>
-                            Silahkan isi data diri anda
+                            Silahkan isi data pemesan
                         </DialogDescription>
                     </DialogHeader>
                     <form action="" method="post" onSubmit={handleSubmit}>
                         <div className="flex flex-col gap-y-4">
-                            <input type="text" name="name" id="name" placeholder="Nama" className="p-2 rounded-md border" value={name} onChange={(e)=>setName(e.target.value)}/>
-                            <input type="email" name="email" id="email" placeholder="Email" className="p-2 rounded-md border" value={email} onChange={(e)=>setEmail(e.target.value)}/>
-                            <input type="tel" name="telepon" id="telepon" placeholder="Telepon/WA" className="p-2 rounded-md border" value={telepon} onChange={(e)=>setTelepon(e.target.value)}/>
-                            <input type="text" name="address" id="address" placeholder="Alamat" className="p-2 rounded-md border" value={address} onChange={(e)=>setAddress(e.target.value)}/>
+                            <input type="text" name="name" id="name" placeholder="Nama" className="p-2 rounded-md border" value={name} onChange={(e) => setName(e.target.value)} />
+                            <input type="email" name="email" id="email" placeholder="Email" className="p-2 rounded-md border" value={email} onChange={(e) => setEmail(e.target.value)} />
+                            <input type="tel" name="telepon" id="telepon" placeholder="Telepon/WA" className="p-2 rounded-md border" value={telepon} onChange={(e) => setTelepon(e.target.value)} />
+                            <input type="text" name="address" id="address" placeholder="Alamat" className="p-2 rounded-md border" value={address} onChange={(e) => setAddress(e.target.value)} />
                         </div>
-                        <div className="flex justify-end gap-x-4 mt-8">
-                            <Button onClick={()=>setIscheckout(!isCheckout)}>Batal</Button>
+                        <DialogFooter className={"flex justify-end gap-x-4 mt-8"}>
+                            <DialogClose asChild>
+                                <Button variant="secondary">Batal</Button>
+                            </DialogClose>
                             <Button type="submit">Checkout</Button>
-                        </div>
+                        </DialogFooter>
                     </form>
                 </DialogContent>
             </Dialog>
@@ -282,4 +277,8 @@ const DialogCheckout = ({isOpen})=>{
     )
 }
 
-export {Cart};
+// const DialogDiscountItem = () => {
+
+// }
+
+export { Cart };

@@ -10,7 +10,7 @@ const Buyer = createContext(null);
 export { CartDialog, CartItems, Buyer };
 
 export default function BerandaLayout({ children }) {
-    const [showCart, setShowCart] = useState(true);
+    const [showCart, setShowCart] = useState(false);
     const [cartItems, setCartItems] = useState([]);
     const [pembeli, setPembeli] = useState(null);
     useEffect(() => {
