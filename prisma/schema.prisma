@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model product {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nama         String?   @db.VarChar
+  harga        Decimal?  @db.Decimal
+  harga_satuan Decimal?  @db.Decimal
+  created_at   DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime  @default(now()) @db.Timestamptz(6)
+  category_id  String?   @db.Uuid
+  gambar       String?
+  category     category? @relation(fields: [category_id], references: [id], map: "public_product_category_id_fkey")
+}
+
+model category {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String?   @db.VarChar
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  product    product[]
+}

@@ -7,18 +7,18 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const Produk = ({ cart, data }) => {
-    const [price, setPrice] = useState(data.price)
+    const [price, setPrice] = useState(data.harga)
     const [isBoxSelected, setIsBoxSelected] = useState(true);
     const formattedPrice = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(price)
     const {showCart, setShowCart, cartItems, setCartItems} = cart;
     const handleBoxClick = () => {
         setIsBoxSelected(true);
-        setPrice(data.price);
+        setPrice(data.harga);
     };
 
     const handleItemClick = () => {
         setIsBoxSelected(false);
-        setPrice(data.price_one_item);
+        setPrice(data.harga_satuan);
     };
 
     function handleAddToCart() {
@@ -27,9 +27,9 @@ const Produk = ({ cart, data }) => {
         }
         const cartItem = {
             id: data.id,
-            name: data.name,
+            name: data.nama,
             price: price,
-            category: data.category,
+            category: data.category.name,
             qty: 1,
             subtotal: price
         };
@@ -58,7 +58,7 @@ const Produk = ({ cart, data }) => {
                 </button>
                 <div className="mt-4 flex flex-col gap-y-2">
                     <div className="flex justify-between font-medium">
-                        <span className="text-nowrap text-ellipsis overflow-hidden 2xl:max-w-28">{data.name}</span>
+                        <span className="text-nowrap text-ellipsis overflow-hidden 2xl:max-w-28">{data.nama}</span>
                         <span>{formattedPrice}</span>
                     </div>
                     <div className="flex justify-between items-center">
