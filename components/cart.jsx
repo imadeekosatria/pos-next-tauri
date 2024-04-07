@@ -281,4 +281,4 @@ const DialogCheckout = ({ isOpen }) => {
 
 // }
 
-export { Cart };
+export default Cart;

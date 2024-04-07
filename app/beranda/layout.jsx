@@ -1,7 +1,9 @@
 'use client'
-import {Cart} from "@/components/cart";
+import dynamic from "next/dynamic";
 import { Nav } from "@/components/sidenav";
 import { createContext, useState, useEffect } from "react";
+
+const Cart = dynamic(() => import('@/components/cart'));
 
 const CartDialog = createContext(null);
 const CartItems = createContext(null);

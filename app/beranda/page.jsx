@@ -1,14 +1,15 @@
 'use client'
+import dynamic from "next/dynamic";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon } from "@fortawesome/free-solid-svg-icons";
 import { cn } from "@/lib/utils";
-import { Produk } from "@/components/products";
 import { useContext, useEffect, useState } from "react";
-import { CartDialog, CartItems } from "@/app/beranda/layout";
 import { createBrowserClient } from "@supabase/ssr";
-import ProductsLoader from "@/components/products-loader";
+import { CartDialog, CartItems } from "@/app/beranda/layout";
 import { ShoppingCart } from "@/components/images";
 
+const Produk = dynamic(() => import('@/components/products'), {ssr: false});
+const ProductsLoader = dynamic(() => import('@/components/products-loader'));
 
 
 const Page = () => {
@@ -39,7 +40,7 @@ const Page = () => {
                 <input type="text" placeholder="Cari produk" name="searchProduk" className="bg-white w-96 px-4 py-2 rounded-full focus:outline-slate-400 placeholder:text-slate-400" />
                 <div className="flex items-center gap-x-8">
                     <FontAwesomeIcon icon={faMoon} fixedWidth className="cursor-pointer bg-slate-50 p-2 rounded-full"/>
-                    <button className="relative" onClick={()=>{setShowCart(true)}}>
+                    <button className="relative" onClick={()=>{setShowCart(true)}} aria-label="cart">
                         <ShoppingCart/>
                         {cartItems.length > 0 && <span className="absolute -top-2 -right-2 py-0.5 px-2 text-white font-medium rounded-full bg-red-500 text-xs">{cartItems.length}</span>}
                     </button>

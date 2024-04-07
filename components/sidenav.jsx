@@ -35,7 +35,7 @@ const Nav = () => {
         <div className="px-4 py-8">
           <TooltipProvider delayDuration={200}>
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger aria-label="User">
                 <FontAwesomeIcon icon={faCircleUser} size="3x" style={{ color: '#64748b' }} />
               </TooltipTrigger>
               <TooltipContent side={"right"}>
@@ -46,16 +46,16 @@ const Nav = () => {
 
         </div>
         <div className="py-16 h-2/3 flex flex-col justify-center">
-          <ul className="flex flex-col items-center gap-y-6">
+          <div className="flex flex-col items-center gap-y-6">
             {link.map((item, index) => (
               <TooltipProvider key={index} delayDuration={200}>
                 <Tooltip>
-                  <TooltipTrigger>
-                    <li key={index} className={`${pathname === item.path ? 'bg-blue-400 p-2' : 'hover:bg-slate-300 p-2'} rounded-2xl`}>
-                      <Link href={item.path}>
+                  <TooltipTrigger aria-label={item.name}>
+                    <div key={index} className={`${pathname === item.path ? 'bg-blue-400 p-2' : 'hover:bg-slate-300 p-2'} rounded-2xl`}>
+                      <Link href={item.path} aria-label={item.name}>
                         <FontAwesomeIcon icon={item.icon} fixedWidth={true} size="2x" className={`${pathname === item.path ? "text-slate-50" : "text-slate-500"}`} />
                       </Link>
-                    </li>
+                    </div>
                   </TooltipTrigger>
                   <TooltipContent side={"right"}>
                     {item.name}
@@ -63,7 +63,7 @@ const Nav = () => {
                 </Tooltip>
               </TooltipProvider>
             ))}
-          </ul>
+          </div>
         </div>
       </nav>
     </>

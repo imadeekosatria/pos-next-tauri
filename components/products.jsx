@@ -52,8 +52,8 @@ const Produk = ({ cart, data }) => {
     return (
         <>
             <div className="bg-white shadow-lg w-full h-max rounded-xl p-4 relative animate-slide-up">
-                <Image src={food} alt="produk1" style={{width: '100%', maxHeight: '8rem', objectFit: "cover"}} loading="lazy" className="rounded-lg shadow-lg"/>
-                <button className="bg-blue-700 p-2 rounded-full absolute top-2 right-2 hover:bg-blue-600" onClick={ handleAddToCart }>
+                <Image src={food} alt="produk1" style={{width: '100%', maxHeight: '8rem', objectFit: "cover"}} className="rounded-lg shadow-lg"/>
+                <button aria-label="add to cart" className="bg-blue-700 p-2 rounded-full absolute top-2 right-2 hover:bg-blue-600" onClick={ handleAddToCart }>
                     <ShoppingCart className="fill-slate-50"/>
                 </button>
                 <div className="mt-4 flex flex-col gap-y-2">
@@ -63,18 +63,18 @@ const Produk = ({ cart, data }) => {
                     </div>
                     <div className="flex justify-between items-center">
                         <span>Tambah per buah</span>
-                        <button className="rounded-full border py-0.5 px-1 text-slate-400 hover:text-slate-600 hover:border-slate-600">
+                        <button aria-label="plus" className="rounded-full border py-0.5 px-1 text-slate-400 hover:text-slate-600 hover:border-slate-600">
                             <FontAwesomeIcon icon={faPlus} fixedWidth />
                         </button>
                     </div>
                     <div className="flex gap-x-4">
-                        <button className="flex flex-col gap-y-1 items-center text-sm" onClick={handleBoxClick}>
+                        <button aria-label="box" className="flex flex-col gap-y-1 items-center text-sm" onClick={handleBoxClick}>
                             <div className={cn("p-2 rounded-full",{'bg-blue-400 hover:bg-blue-300': isBoxSelected, 'bg-slate-100 hover:bg-slate-200':!isBoxSelected})}>
                                 <Package className={cn({"fill-white":isBoxSelected})}/>
                             </div>
                             Box
                         </button>
-                        <button className="flex flex-col gap-y-1 items-center text-sm" onClick={handleItemClick}>
+                        <button aria-label="satuan" className="flex flex-col gap-y-1 items-center text-sm" onClick={handleItemClick}>
                             <div className={cn("p-2 rounded-full", {'bg-blue-400 hover:bg-blue-300': !isBoxSelected, 'bg-slate-100 hover:bg-slate-200': isBoxSelected})}>
                                 <Atr className={cn({'fill-white': !isBoxSelected})}/>
                             </div>
@@ -87,4 +87,4 @@ const Produk = ({ cart, data }) => {
     )
 }
 
-export { Produk };
+export default Produk;
