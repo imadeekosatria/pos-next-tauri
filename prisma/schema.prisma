@@ -2,27 +2,52 @@ generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
 
+datasource db {
+  provider = "sqlite"
+  url      = "file:./database/pos.db"
+}
+// Untuk postgresql
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+// model product {
+//   id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+//   nama         String?   @db.VarChar
+//   harga        Decimal?  @db.Decimal
+//   harga_satuan Decimal?  @db.Decimal
+//   created_at   DateTime  @default(now()) @db.Timestamptz(6)
+//   updated_at   DateTime  @default(now()) @db.Timestamptz(6)
+//   category_id  String?   @db.Uuid
+//   gambar       String?
+//   category     category? @relation(fields: [category_id], references: [id], map: "public_product_category_id_fkey")
+// }
+
+// model category {
+//   id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+//   name       String?   @db.VarChar
+//   created_at DateTime  @default(now()) @db.Timestamptz(6)
+//   product    product[]
+// }
+
+// Untuk sqlite
 model product {
-  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  nama         String?   @db.VarChar
-  harga        Decimal?  @db.Decimal
-  harga_satuan Decimal?  @db.Decimal
-  created_at   DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at   DateTime  @default(now()) @db.Timestamptz(6)
-  category_id  String?   @db.Uuid
+  id           String    @id @default(uuid())
+  nama         String?
+  harga        Float?
+  harga_satuan Float?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  category_id  String?
   gambar       String?
-  category     category? @relation(fields: [category_id], references: [id], map: "public_product_category_id_fkey")
+  category     category? @relation(fields: [category_id], references: [id])
 }
 
 model category {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name       String?   @db.VarChar
-  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  id         String    @id @default(uuid())
+  name       String?
+  created_at DateTime  @default(now())
   product    product[]
 }

@@ -1,8 +1,6 @@
 'use client'
 import Image from "next/image";
 import { Atr, food, ShoppingCart, Package } from "./images";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -40,19 +38,20 @@ const Produk = ({ cart, data }) => {
         let newCartItems;
         if (existingCartItem) {
             // If it does, increment the count
-            existingCartItem.qty += 1;
+            existingCartItem.qty++;
+            existingCartItem.subtotal = existingCartItem.price * existingCartItem.qty;
             newCartItems = [...existingCartItems];
         } else {
             // If it doesn't, add it to the cart
             newCartItems = [...existingCartItems, cartItem];
         }
-        localStorage.setItem('cartItems', JSON.stringify(newCartItems));
         setCartItems(newCartItems);
+        localStorage.setItem('cartItems', JSON.stringify(newCartItems));
     }
     return (
         <>
             <div className="bg-white shadow-lg w-full h-max rounded-xl p-4 relative animate-slide-up">
-                <Image src={food} alt="produk1" style={{width: '100%', maxHeight: '8rem', objectFit: "cover"}} className="rounded-lg shadow-lg"/>
+                <Image src={food} placeholder="blur" alt="produk1" style={{width: '100%', maxHeight: '8rem', objectFit: "cover"}} className="rounded-lg shadow-lg"/>
                 <button aria-label="add to cart" className="bg-blue-700 p-2 rounded-full absolute top-2 right-2 hover:bg-blue-600" onClick={ handleAddToCart }>
                     <ShoppingCart className="fill-slate-50"/>
                 </button>
@@ -62,10 +61,7 @@ const Produk = ({ cart, data }) => {
                         <span>{formattedPrice}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                        <span>Tambah per buah</span>
-                        <button aria-label="plus" className="rounded-full border py-0.5 px-1 text-slate-400 hover:text-slate-600 hover:border-slate-600">
-                            <FontAwesomeIcon icon={faPlus} fixedWidth />
-                        </button>
+                        <span>{data.category.name}</span>
                     </div>
                     <div className="flex gap-x-4">
                         <button aria-label="box" className="flex flex-col gap-y-1 items-center text-sm" onClick={handleBoxClick}>

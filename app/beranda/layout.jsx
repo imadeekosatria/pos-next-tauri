@@ -1,6 +1,6 @@
 'use client'
 import dynamic from "next/dynamic";
-import { Nav } from "@/components/sidenav";
+import { Nav, SideNav } from "@/components/nav";
 import { createContext, useState, useEffect } from "react";
 
 const Cart = dynamic(() => import('@/components/cart'));
@@ -21,7 +21,7 @@ export default function BerandaLayout({ children }) {
     }, []);
     return (
         <div className="h-screen grid grid-cols-12 w-full bg-slate-200">
-            <Nav />
+            <SideNav />
             <CartDialog.Provider value={{showCart, setShowCart}}>
                 <CartItems.Provider value={{cartItems, setCartItems}}>
                     <Buyer.Provider value={{pembeli, setPembeli}}>

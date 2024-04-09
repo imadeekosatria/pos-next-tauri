@@ -1,16 +1,17 @@
 'use client'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleUser, faHouse, faTicket, faBoxArchive } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCircleUser, faHouse, faTicket, faBoxArchive, faMoon } from "@fortawesome/free-solid-svg-icons"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { ShoppingCart } from "@/components/images"
 
-const Nav = () => {
+const SideNav = () => {
   const pathname = usePathname();
   const link = [
     {
@@ -70,4 +71,22 @@ const Nav = () => {
   )
 }
 
-export { Nav };
+const TopNav = ({cartItems, setShowCart}) => {
+  return (
+    <>
+      <div className="flex justify-between gap-x-4 items-center">
+        <input type="text" placeholder="Cari produk" name="searchProduk" className="bg-white w-96 px-4 py-2 rounded-full focus:outline-slate-400 placeholder:text-slate-400" />
+        <div className="flex items-center gap-x-8">
+          <FontAwesomeIcon icon={faMoon} fixedWidth className="cursor-pointer bg-slate-50 p-2 rounded-full" />
+          <button className="relative" onClick={() => { setShowCart(true) }} aria-label="cart">
+            <ShoppingCart />
+            {cartItems.length > 0 && <span className="absolute -top-2 -right-2 py-0.5 px-2 text-white font-medium rounded-full bg-red-500 text-xs">{cartItems.length}</span>}
+          </button>
+          <span className="font-semibold text-xl">Hello, Admin</span>
+        </div>
+      </div>
+    </>
+  )
+}
+
+export { SideNav, TopNav };

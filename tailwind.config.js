@@ -72,7 +72,7 @@ module.exports = {
           from: { transform: "translateY(50px)", opacity: 0 },
           to: { transform: "translateY(0px)", opacity: 1 },
         },
-        "slide-right": {
+        "slide-down": {
           from: { transform: "translateY(-50px)", opacity: 0 },
           to: { transform: "translateY(0px)", opacity: 1 },
         },
@@ -81,7 +81,7 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "slide-up": "slide-up 0.3s ease-out",
-        "slide-right": "slide-right 0.25s ease-out",
+        "slide-down": "slide-down 0.25s ease-out",
       },
     },
   },

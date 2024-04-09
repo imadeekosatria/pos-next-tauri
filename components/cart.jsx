@@ -1,6 +1,6 @@
 'use client'
-import { CartDialog, CartItems, Buyer } from "@/app/beranda/layout";
-import { useContext, useState, useEffect } from "react";
+import { CartDialog, CartItems, Buyer } from "@/app/ContextProvider";
+import { useContext, useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faTrashCan, faPlus, faMinus, faTicket } from "@fortawesome/free-solid-svg-icons";
@@ -29,13 +29,23 @@ const Cart = () => {
     const { pembeli, setPembeli } = useContext(Buyer);
 
     const [isCheckout, setIscheckout] = useState(false);
+    const [subTotal, setSubTotal] = useState(0);
     const [total, setTotal] = useState(0);
+    const [discount, setDiscount] = useState(500);
     const formattedDate = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
+    const messagesEndRef = useRef(null);
+
+    useEffect(()=>{
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    },[cartItems.length])
     useEffect(() => {
+        
         const newTotal = cartItems.reduce((sum, item) => sum + item.subtotal, 0);
-        setTotal(newTotal);
-    }, [cartItems]);
+        setSubTotal(newTotal);
+        setTotal(newTotal - discount);
+
+    }, [cartItems, discount]);
 
 
     const handleCheckout = async () => {
@@ -72,7 +82,7 @@ const Cart = () => {
     };
     return (
         <>
-            <div className={cn(`${showCart ? 'bg-white w-full col-span-3 h-screen p-2 2xl:p-6 relative animate-slide-right' : 'hidden'}`)}>
+            <div className={cn(`${showCart ? 'bg-white w-full col-span-3 h-screen p-2 2xl:p-6 relative animate-slide-down' : 'hidden'}`)}>
                 <div className="flex flex-col gap-y-4">
                     <div className="flex justify-between items-center pl-2">
                         <span className="text-2xl font-semibold">Pesanan saat ini</span>
@@ -94,6 +104,7 @@ const Cart = () => {
                                 <span className="text-center text-xl font-semibold">Tidak ada item di keranjang</span>
                             </div>
                         )}
+                        <div ref={messagesEndRef}></div>
                     </div>
                 </div>
                 <div className="flex flex-col gap-y-4 w-11/12 rounded-lg absolute bottom-4">
@@ -108,16 +119,16 @@ const Cart = () => {
                         <div className="pb-4 flex flex-col gap-y-1.5 2xl:gap-y-2.5">
                             <div className="flex justify-between">
                                 <span>Subtotal</span>
-                                <span>{formatedCurency(total)}</span>
+                                <span>{formatedCurency(subTotal)}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span>Diskon</span>
-                                <span className="text-red-400">-Rp 10000</span>
+                                <span className="text-red-400">-{formatedCurency(discount)}</span>
                             </div>
                         </div>
                         <div className="flex justify-between pt-4">
                             <span>Total</span>
-                            <span>Rp 140.000</span>
+                            <span>{formatedCurency(total)}</span>
                         </div>
                     </div>
                     <button className="bg-blue-700 p-4 w-full text-2xl text-white font-medium rounded-lg" onClick={handleCheckout}>Cetak Pesanan</button>
@@ -168,6 +179,12 @@ const CartItem = ({ items }) => {
         localStorage.setItem('cartItems', JSON.stringify(newCartItems));
     }
 
+    useEffect(()=>{
+        const updatedItem = cartItems.find(cartItem => cartItem.id === item.id && cartItem.price === item.price);
+        if (updatedItem) {
+            setItemCount(updatedItem.qty);
+        }
+    },[cartItems, item.id, item.price])
     return (
         <>
             <div className="shadow-lg relative rounded-lg p-2.5 animate-slide-up mb-4 ">
