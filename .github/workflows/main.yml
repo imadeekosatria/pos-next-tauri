@@ -13,10 +13,8 @@ jobs:
       fail-fast: false
       matrix:
         settings:
-          - platform: 'windows-latest 32bit' # for Tauri v1 you could replace this with ubuntu-20.04.
-            args: '--target i686-pc-windows-msvc'
-          - platform: 'windows-latest'
-            args: ''
+          - platform: 'windows-latest 32bit/64bit'
+            args: [i686-pc-windows-msvc, x86_64-pc-windows-msvc]
 
     runs-on: ${{ matrix.settings.platform }}
     steps:
