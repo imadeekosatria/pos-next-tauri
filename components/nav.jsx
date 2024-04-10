@@ -16,7 +16,7 @@ const SideNav = () => {
   const link = [
     {
       name: "Beranda",
-      path: "/beranda",
+      path: "/",
       icon: faHouse
     },
     {

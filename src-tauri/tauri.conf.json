@@ -59,7 +59,7 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 768,
+        "height": 600,
         "resizable": true,
         "title": "Aplikasi POS Next Tauri",
         "width": 1024
