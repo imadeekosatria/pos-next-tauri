@@ -13,8 +13,8 @@ jobs:
       fail-fast: false
       matrix:
         settings:
-          - platform: 'windows-latest 32bit/64bit'
-            args: [i686-pc-windows-msvc, x86_64-pc-windows-msvc]
+          - platform: 'windows-latest'
+          - target: [i686-pc-windows-msvc, x86_64-pc-windows-msvc]
 
     runs-on: ${{ matrix.settings.platform }}
     steps:
