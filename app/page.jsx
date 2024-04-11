@@ -28,7 +28,7 @@ export default function Home() {
                         <li key={index} className={cn('bg-white px-6 py-1 text-nowrap rounded-full shadow-lg hover:bg-slate-200 cursor-pointer', index === 0 ? 'bg-blue-700 text-white font-semibold hover:bg-blue-700' : '')}>{item}</li>
                     ))}
                 </ul>
-                <div className={cn("mt-5 grid gap-x-2 2xl:gap-x-4 pr-2 gap-y-4 2xl:gap-y-8 max-h-[32rem] 2xl:max-h-[48rem] hoverable overflow-y-auto", `${showCart ? 'grid-cols-3 2xl:grid-cols-4' : 'grid-cols-4 2xl:grid-cols-6'}`)}>
+                <div className={cn("mt-5 grid gap-x-2 2xl:gap-x-4 pr-2 gap-y-4 2xl:gap-y-8 max-h-[32rem] 2xl:max-h-[48rem] hoverable overflow-y-scroll", `${showCart ? 'grid-cols-3 2xl:grid-cols-4' : 'grid-cols-4 2xl:grid-cols-6'}`)}>
                     {error ? (
                         <div className={showCart ? 'col-span-3 2xl:col-span-4' : 'col-span-4 2xl:col-span-6'}>
                             <ErrorLoadProducts error={error}/>
