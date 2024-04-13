@@ -9,10 +9,10 @@ const nextConfig = {
     },
     // for Tauri
     
-    output: 'export',
-    images: {
-        unoptimized: true,
-    },
+    // output: 'export',
+    // images: {
+    //     unoptimized: true,
+    // },
 };
 
 export default nextConfig;

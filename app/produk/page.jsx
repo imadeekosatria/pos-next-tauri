@@ -1,13 +1,5 @@
 'use client'
 import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import {
     Table,
     TableBody,
     TableCell,
@@ -48,7 +40,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@/components/ui/button";
 import useSWR from "swr";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation"
 
 const fetcher = url => fetch(url).then(res => res.json())
 const formattedPrice = (price) => {
@@ -69,36 +62,28 @@ function formatDate(dateString) {
     return `${formattedDate.replace(/\//g, '-')} ${formattedTime}`;
 }
 const Page = () => {
-    const { data, error, isLoading } = useSWR('/api', fetcher);
-    // console.log(data)
-    const [currentPage, setCurrentPage] = useState(1);
-
+    const searchParams = useSearchParams();
+    const page = searchParams.get('page') || 1;
+    const { data, error, isLoading } = useSWR(`/api/produk?page=${page}`, fetcher);
+    const start = (data?.body.page - 1) * data?.body.itemPerPage + 1;
+    const end = start + data?.body.data.length - 1;
+    const currentPage = data?.body.page;
     const handlePrevious = () => {
         if (currentPage > 1) {
-        setCurrentPage(currentPage - 1);
+            setCurrentPage(currentPage - 1);
         }
     };
 
     const handleNext = () => {
         if (currentPage < totalPages) {
-        setCurrentPage(currentPage + 1);
+            setCurrentPage(currentPage + 1);
         }
     };
     return (
         <>
             <main className="col-span-11 py-6 pr-6">
                 <TopNav />
-                <Breadcrumb className="hidden md:flex px-0.5 py-4">
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Beranda</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>Produk</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
+                
                 <Card>
                     <CardHeader className="flex flex-row justify-between">
                         <div>
@@ -137,7 +122,7 @@ const Page = () => {
                                                 <TableCell colSpan={6}>Sedang memuat...</TableCell>
                                             </TableRow>
                                         )
-                                            : (data.body.map((item) => {
+                                            : (data.body.data.map((item) => {
                                                 return (
                                                     <TableRow key={item.id}>
                                                         <TableCell className="hidden md:table-cell">
@@ -174,25 +159,41 @@ const Page = () => {
                     </CardContent>
                     <CardFooter className="flex justify-between">
                         <div className="text-xs text-muted-foreground">
-                            Showing <strong>1-10</strong> of <strong>32</strong>{" "}
+                            Showing <strong>{start}-{end}</strong> of <strong>{data?.body.totalData}</strong>{" "}
                             products
                         </div>
-                        <Pagination className="w-fit flex justify-end mx-0">
+                        <Pagination className="flex justify-end mx-0 w-fit max-w-sm">
                             <PaginationContent>
-                                <PaginationItem>
-                                    <PaginationPrevious href="#" />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">1</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationNext href="#" />
-                                </PaginationItem>
+                                {currentPage > 1 && (
+                                    <PaginationItem>
+                                        <PaginationPrevious href={`/produk?page=${Number(currentPage) - 1}`} />
+                                    </PaginationItem>
+                                )}
+                                {Array.from({ length: data?.body.totalPages }, (_, i) => {
+                                    return (
+                                        <PaginationItem key={i}>
+                                            <PaginationLink
+                                                href={`/produk?page=${i + 1}`}
+                                                isActive={Number(currentPage) === i + 1}
+                                            >
+                                                {i + 1}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    )
+                                })}
+                                {/* {data?.body.totalPages > 5 && (
+                                    <PaginationItem>
+                                        <PaginationEllipsis />
+                                    </PaginationItem>
+                                )} */}
+                                {currentPage < data?.body.totalPages && (
+                                    <PaginationItem>
+                                        <PaginationNext href={`/produk?page=${Number(currentPage) + 1}`} />
+                                    </PaginationItem>
+                                )}
                             </PaginationContent>
                         </Pagination>
+
                     </CardFooter>
                 </Card>
             </main>
