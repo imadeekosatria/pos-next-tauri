@@ -19,6 +19,7 @@ jobs:
             args: ''
 
     runs-on: ${{ matrix.settings.platform }}
+    environment: release
     steps:
       - uses: actions/checkout@v4
 
