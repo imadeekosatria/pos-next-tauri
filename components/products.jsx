@@ -50,12 +50,12 @@ const Produk = ({ cart, data }) => {
     }
     return (
         <>
-            <div className="bg-white shadow-lg w-full h-max rounded-xl p-4 relative animate-slide-up">
+            <div className="bg-white shadow-lg w-full max-h-[19rem] rounded-xl p-4 relative animate-slide-up">
                 <Image src={food} placeholder="blur" alt="produk1" style={{width: '100%', maxHeight: '8rem', objectFit: "cover"}} className="rounded-lg shadow-lg"/>
                 <button aria-label="add to cart" className="bg-blue-700 p-2 rounded-full absolute top-2 right-2 hover:bg-blue-600" onClick={ handleAddToCart }>
                     <ShoppingCart className="fill-slate-50"/>
                 </button>
-                <div className="mt-4 flex flex-col gap-y-2">
+                <div className="mt-4 2xl:mt-8 flex flex-col gap-y-2">
                     <div className="flex justify-between font-medium">
                         <span className="text-nowrap text-ellipsis overflow-hidden 2xl:max-w-28">{data.nama}</span>
                         <span>{formattedPrice}</span>
@@ -63,7 +63,7 @@ const Produk = ({ cart, data }) => {
                     <div className="flex justify-between items-center">
                         <span>{data.category.name}</span>
                     </div>
-                    <div className="flex gap-x-4">
+                    <div className="flex gap-x-4 2xl:absolute 2xl:bottom-4">
                         <button aria-label="box" className="flex flex-col gap-y-1 items-center text-sm" onClick={handleBoxClick}>
                             <div className={cn("p-2 rounded-full",{'bg-blue-400 hover:bg-blue-300': isBoxSelected, 'bg-slate-100 hover:bg-slate-200':!isBoxSelected})}>
                                 <Package className={cn({"fill-white":isBoxSelected})}/>
