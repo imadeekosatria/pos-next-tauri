@@ -19,9 +19,7 @@ jobs:
             args: ''
 
     runs-on: ${{ matrix.settings.platform }}
-    env:
-      SUPABASE_ACCESS_TOKEN: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpueGFkanp1dG9yaWNlaW1tbmNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTA5MzQwMDEsImV4cCI6MjAyNjUxMDAwMX0.nHEvRLAfHkrwvGZnyKIxA4RbArDFwVeEf0H6RVp-CvA
-      PROJECT_ID: jnxadjzutoriceimmnck
+    environment: release
     steps:
       - uses: actions/checkout@v4
 
