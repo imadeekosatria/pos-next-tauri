@@ -6,11 +6,10 @@ import { CartDialog, CartItems } from "@/app/ContextProvider";
 import { TopNav } from "@/components/nav";
 import { getAllProducts, getAllTag, getTagProducts } from "@/components/supabase";
 
-const Produk = dynamic(() => import('@/components/products'), { ssr: false });
-const ProductsLoader = dynamic(() => import('@/components/products-loader'));
-const ErrorLoadProducts = dynamic(() => import('@/components/errorload-products'));
+const ProdukCard = dynamic(() => import('@/components/products components/products-card'), { ssr: false });
+const ProductsLoader = dynamic(() => import('@/components/products components/products-loader'));
+const ErrorLoadProducts = dynamic(() => import('@/components/products components/products-errorload'));
 const Cart = dynamic(() => import('@/components/cart'));
-
 
 export default function Home() {
     const { showCart, setShowCart } = useContext(CartDialog);
@@ -67,7 +66,7 @@ export default function Home() {
                         ))
                     ) : (data.map((item) => {
                         return (
-                            <Produk key={item.id} cart={{ showCart, setShowCart, cartItems, setCartItems }} data={item} />
+                            <ProdukCard key={item.id} cart={{ showCart, setShowCart, cartItems, setCartItems }} data={item} />
                         )
                     }))}
                 </div>

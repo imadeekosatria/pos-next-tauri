@@ -8,9 +8,9 @@ import { CartDialog, CartItems } from "@/app/ContextProvider";
 import { ShoppingCart } from "@/components/images";
 import useSWR from "swr";
 
-const Produk = dynamic(() => import('@/components/products'), { ssr: false });
-const ProductsLoader = dynamic(() => import('@/components/products-loader'));
-const ErrorLoadProducts = dynamic(() => import('@/components/errorload-products'));
+const Produk = dynamic(() => import('@/components/products components/products-card'), { ssr: false });
+const ProductsLoader = dynamic(() => import('@/components/products components/products-loader'));
+const ErrorLoadProducts = dynamic(() => import('@/components/products components/products-errorload'));
 
 const fetcher = url => fetch(url).then(res => res.json())
 

@@ -1,10 +1,10 @@
 'use client'
 import Image from "next/image";
-import { Atr, food, ShoppingCart, Package } from "./images";
+import { Atr, food, ShoppingCart, Package } from "../images";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-const Produk = ({ cart, data }) => {
+const ProdukCard = ({ cart, data }) => {
     const [price, setPrice] = useState(data.harga)
     const [isBoxSelected, setIsBoxSelected] = useState(true);
     const formattedPrice = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(price)
@@ -83,4 +83,4 @@ const Produk = ({ cart, data }) => {
     )
 }
 
-export default Produk;
+export default ProdukCard;
