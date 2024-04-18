@@ -41,13 +41,13 @@ const SideNav = () => {
   const pathname = usePathname();
   return (
     <>
-      <div className="relative">
-        <nav className="w-20 bg-white col-start-1 h-screen fixed">
-          <div className="px-4 py-8">
+      <div className="relative z-10">
+        <nav className="bg-white w-16 lg:w-20 col-start-1 h-screen fixed">
+          <div className="w-full flex justify-center py-8">
             <TooltipProvider delayDuration={200}>
               <Tooltip>
                 <TooltipTrigger aria-label="User">
-                  <FontAwesomeIcon icon={faCircleUser} size="3x" style={{ color: '#64748b' }} />
+                  <FontAwesomeIcon icon={faCircleUser} style={{ color: '#64748b' }} size="3x"/>
                 </TooltipTrigger>
                 <TooltipContent side={"right"}>
                   User
@@ -62,9 +62,9 @@ const SideNav = () => {
                 <TooltipProvider key={index} delayDuration={200}>
                   <Tooltip>
                     <TooltipTrigger aria-label={item.name}>
-                      <div key={index} className={`${pathname === item.path ? 'bg-blue-400 p-2' : 'hover:bg-slate-300 p-2'} rounded-2xl`}>
+                      <div key={index} className={`${pathname === item.path ? 'bg-blue-300 px-0.5 py-1 lg:p-2' : 'hover:bg-slate-300 px-0.5 py-1 lg:p-2'} rounded-lg`}>
                         <Link href={item.path} aria-label={item.name}>
-                          <FontAwesomeIcon icon={item.icon} fixedWidth={true} size="2x" className={`${pathname === item.path ? "text-slate-50" : "text-slate-500"}`} />
+                          <FontAwesomeIcon icon={item.icon} fixedWidth={true} size="2x" className={`${pathname === item.path ? "text-white" : "text-slate-500"}`} />
                         </Link>
                       </div>
                     </TooltipTrigger>
@@ -90,7 +90,7 @@ const TopNav = ({ cartItems, setShowCart }) => {
       <div className="relative">
         <div className="flex justify-between gap-x-4 items-center">
           <input type="text" placeholder="Cari produk" name="searchProduk" className="bg-white w-96 px-4 py-2 rounded-full focus:outline-slate-400 placeholder:text-slate-400" />
-          <div className="flex items-center gap-x-8">
+          <div className="flex items-center gap-x-4 lg:gap-x-8">
             <FontAwesomeIcon icon={faMoon} fixedWidth className="cursor-pointer bg-slate-50 p-2 rounded-full" />
             {(pathname === "/") && (
               <button className="relative" onClick={() => { setShowCart(true) }} aria-label="cart">
@@ -98,7 +98,7 @@ const TopNav = ({ cartItems, setShowCart }) => {
                 {cartItems.length > 0 && <span className="absolute -top-2 -right-2 py-0.5 px-2 text-white font-medium rounded-full bg-red-500 text-xs">{cartItems.length}</span>}
               </button>)
             }
-            <span className="font-semibold text-xl">Hello, Admin</span>
+            <span className="font-semibold text-base text-nowrap lg:text-xl">Hello, Admin</span>
           </div>
         </div>
         {(pathname !== "/") && (

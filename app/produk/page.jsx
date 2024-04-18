@@ -39,11 +39,10 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@/components/ui/button";
-import useSWR from "swr";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation"
+import { getPaginateProducts } from "@/components/supabase"
 
-const fetcher = url => fetch(url).then(res => res.json())
 const formattedPrice = (price) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(price)
 }
@@ -64,21 +63,33 @@ function formatDate(dateString) {
 const Page = () => {
     const searchParams = useSearchParams();
     const page = searchParams.get('page') || 1;
-    const { data, error, isLoading } = useSWR(`/api/produk?page=${page}`, fetcher);
-    const start = (data?.body.page - 1) * data?.body.itemPerPage + 1;
-    const end = start + data?.body.data.length - 1;
-    const currentPage = data?.body.page;
-    const handlePrevious = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
+    const [data, setData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [totalPages, setTotalPages] = useState(0);
+    const [totalData, setTotalData] = useState(0);
+    const [startIndex, setStartIndex] = useState(0);
+    const [endIndex, setEndIndex] = useState(0);
+    useEffect(()=>{
+        const fetchData = async () => {
+            try{
+                const products = await getPaginateProducts(page)
 
-    const handleNext = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage(currentPage + 1);
+                setData(products.product)
+                setTotalData(products.count)
+                setStartIndex(products.startIndex + 1)
+                setEndIndex(products.endIndex + 1)
+                setTotalPages(products.totalPages)
+                
+                console.log(products)
+            }catch(error){
+                setError(error)
+            }
+            setIsLoading(false)
         }
-    };
+        fetchData()
+    },[page])
+
     return (
         <>
             <main className="col-span-11 py-6 pr-6">
@@ -122,7 +133,7 @@ const Page = () => {
                                                 <TableCell colSpan={6}>Sedang memuat...</TableCell>
                                             </TableRow>
                                         )
-                                            : (data.body.data.map((item) => {
+                                            : (data.map((item) => {
                                                 return (
                                                     <TableRow key={item.id}>
                                                         <TableCell className="hidden md:table-cell">
@@ -159,36 +170,36 @@ const Page = () => {
                     </CardContent>
                     <CardFooter className="flex justify-between">
                         <div className="text-xs text-muted-foreground">
-                            Showing <strong>{start}-{end}</strong> of <strong>{data?.body.totalData}</strong>{" "}
-                            products
+                            Showing <strong>{startIndex}-{endIndex}</strong> of <strong>{totalData}</strong>
+                            {" "}products
                         </div>
                         <Pagination className="flex justify-end mx-0 w-fit max-w-sm">
                             <PaginationContent>
-                                {currentPage > 1 && (
+                                {page > 1 && (
                                     <PaginationItem>
-                                        <PaginationPrevious href={`/produk?page=${Number(currentPage) - 1}`} />
+                                        <PaginationPrevious href={`/produk?page=${Number(page) - 1}`} />
                                     </PaginationItem>
                                 )}
-                                {Array.from({ length: data?.body.totalPages }, (_, i) => {
+                                {Array.from({ length: totalPages }, (_, i) => {
                                     return (
                                         <PaginationItem key={i}>
                                             <PaginationLink
                                                 href={`/produk?page=${i + 1}`}
-                                                isActive={Number(currentPage) === i + 1}
+                                                isActive={Number(page) === i + 1}
                                             >
                                                 {i + 1}
                                             </PaginationLink>
                                         </PaginationItem>
                                     )
                                 })}
-                                {/* {data?.body.totalPages > 5 && (
+                                { totalPages > 5 && (
                                     <PaginationItem>
                                         <PaginationEllipsis />
                                     </PaginationItem>
-                                )} */}
-                                {currentPage < data?.body.totalPages && (
+                                )}
+                                { page < totalPages && (
                                     <PaginationItem>
-                                        <PaginationNext href={`/produk?page=${Number(currentPage) + 1}`} />
+                                        <PaginationNext href={`/produk?page=${Number(page) + 1}`} />
                                     </PaginationItem>
                                 )}
                             </PaginationContent>
