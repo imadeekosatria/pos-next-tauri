@@ -3,11 +3,11 @@ import Image from "next/image";
 import { Atr, food, ShoppingCart, Package } from "../images";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { formattedPrice } from "@/utils/format";
 
 const ProdukCard = ({ cart, data }) => {
     const [price, setPrice] = useState(data.harga)
     const [isBoxSelected, setIsBoxSelected] = useState(true);
-    const formattedPrice = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(price)
     const {showCart, setShowCart, cartItems, setCartItems} = cart;
     const handleBoxClick = () => {
         setIsBoxSelected(true);
@@ -58,7 +58,7 @@ const ProdukCard = ({ cart, data }) => {
                 <div className="mt-4 2xl:mt-8 flex flex-col gap-y-2">
                     <div className="flex justify-between font-medium">
                         <span className="text-nowrap text-ellipsis overflow-hidden 2xl:max-w-28">{data.nama}</span>
-                        <span>{formattedPrice}</span>
+                        <span>{formattedPrice(price)}</span>
                     </div>
                     <div className="flex justify-between items-center">
                         <span>{data.category.name}</span>

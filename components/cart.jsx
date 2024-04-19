@@ -19,9 +19,7 @@ import { Button } from "./ui/button";
 import { DialogClose } from "@radix-ui/react-dialog";
 
 
-const formatedCurency = (number) => {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(number)
-}
+import {formattedPrice} from "@/utils/format"
 
 const Cart = () => {
     const { showCart, setShowCart } = useContext(CartDialog);
@@ -119,16 +117,16 @@ const Cart = () => {
                         <div className="pb-4 flex flex-col gap-y-1.5 2xl:gap-y-2.5">
                             <div className="flex justify-between">
                                 <span>Subtotal</span>
-                                <span>{formatedCurency(subTotal)}</span>
+                                <span>{formattedPrice(subTotal)}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span>Diskon</span>
-                                <span className="text-red-400">-{formatedCurency(discount)}</span>
+                                <span className="text-red-400">-{formattedPrice(discount)}</span>
                             </div>
                         </div>
                         <div className="flex justify-between pt-4">
                             <span>Total</span>
-                            <span>{formatedCurency(total)}</span>
+                            <span>{formattedPrice(total)}</span>
                         </div>
                     </div>
                     <button className="bg-blue-700 p-4 w-full text-2xl text-white font-medium rounded-lg" onClick={handleCheckout}>Cetak Pesanan</button>
@@ -199,7 +197,7 @@ const CartItem = ({ items }) => {
                         <span className="font-semibold text-sm">{item.name}</span>
                         <span className="text-xs hidden 2xl:block">{item.category}</span>
                         <div className="2xl:absolute 2xl:bottom-0 flex gap-x-3 justify-between items-end w-full">
-                            <span className="text-xs 2xl:text-base font-bold text-blue-700">{formatedCurency(item.price)}</span>
+                            <span className="text-xs 2xl:text-base font-bold text-blue-700">{formattedPrice(item.price)}</span>
                             <div className="flex w-28 justify-between">
                                 <button className="bg-slate-300 rounded-md px-1 hover:bg-slate-200"><FontAwesomeIcon icon={faTicket}/></button>
                                 <button className="bg-slate-300 rounded-md px-1 hover:bg-slate-200" onClick={minus}><FontAwesomeIcon icon={faMinus} /></button>
