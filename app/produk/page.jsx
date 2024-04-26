@@ -34,6 +34,7 @@ import { useSearchParams } from "next/navigation"
 import { getPaginateProducts } from "@/components/supabase"
 import { ProductsRowTable } from "@/components/products components/products-row-table"
 import { AddProductDialog } from "@/components/products components/products-dialog";
+import { Toaster } from "@/components/ui/toaster"
 
 
 const Page = () => {
@@ -79,7 +80,7 @@ const Page = () => {
                             <CardDescription>Daftar produk yang tersedia</CardDescription>
                         </div>
                         <div>
-                            <Button size="sm" className="flex gap-x-2" onClick={()=>setOpen(true)}>
+                            <Button size="sm" className="flex gap-x-2" onClick={() => setOpen(true)}>
                                 <FontAwesomeIcon icon={faCirclePlus} size="lg" />
                                 <span>Tambah Produk</span>
                             </Button>
@@ -112,29 +113,58 @@ const Page = () => {
                                         )
                                             : (data.map((item) => {
                                                 return (
-                                                    <ProductsRowTable key={item.id} product={item}/>
+                                                    <ProductsRowTable key={item.id} product={item} />
                                                 )
                                             }
-                                        )
-                                    )
+                                            )
+                                            )
                                 }
                             </TableBody>
                         </Table>
                     </CardContent>
                     <CardFooter className="flex justify-between">
                         <div className="text-xs text-muted-foreground">
-                            Showing <strong>{startIndex}-{endIndex}</strong> of <strong>{totalData}</strong>
-                            {" "}products
+                            Menampilkan <strong>{startIndex} - {endIndex}</strong> dari <strong>{totalData}</strong>
+                            {" "}produk
                         </div>
-                        <Pagination className="flex justify-end mx-0 w-fit max-w-sm">
+                        <Pagination className="flex justify-end mx-0 w-fit  ">
                             <PaginationContent>
+                                {page > 2 && (
+                                    <PaginationItem className="sm:hidden lg:block">
+                                        <PaginationLink href={`/produk?page=1`} className="w-fit p-2.5">Halaman Awal</PaginationLink>
+                                    </PaginationItem>
+                                )}
                                 {page > 1 && (
+
                                     <PaginationItem>
                                         <PaginationPrevious href={`/produk?page=${Number(page) - 1}`} />
                                     </PaginationItem>
                                 )}
-                                {Array.from({ length: totalPages }, (_, i) => {
-                                    return (
+                                {totalPages > 5 ? (
+                                    Array.from({ length: totalPages }, (_, i) => {
+                                        if ((i >= Number(page) - 2 && i <= Number(page)) || i >= totalPages - 2) {
+                                            return (
+                                                <PaginationItem key={i}>
+                                                    <PaginationLink
+                                                        href={`/produk?page=${i + 1}`}
+                                                        isActive={Number(page) === i + 1}
+                                                    >
+                                                        {i + 1}
+                                                    </PaginationLink>
+                                                </PaginationItem>
+                                            )
+                                        } else if ((i === Number(page) + 1 && Number(page) >= 8) || i === totalPages - 3) {
+                                            return (
+                                                <PaginationItem key={i}>
+                                                    <PaginationEllipsis />
+                                                </PaginationItem>
+                                            )
+                                        } else {
+                                            return null;
+                                        }
+                                    })
+                                ) : (
+                                    Array.from({ length: totalPages }, (_, i) => (
                                         <PaginationItem key={i}>
                                             <PaginationLink
                                                 href={`/produk?page=${i + 1}`}
@@ -143,24 +173,25 @@ const Page = () => {
                                                 {i + 1}
                                             </PaginationLink>
                                         </PaginationItem>
-                                    )
-                                })}
-                                {totalPages > 5 && (
-                                    <PaginationItem>
-                                        <PaginationEllipsis />
-                                    </PaginationItem>
+                                    ))
                                 )}
                                 {page < totalPages && (
-                                    <PaginationItem>
-                                        <PaginationNext href={`/produk?page=${Number(page) + 1}`} />
-                                    </PaginationItem>
+                                    <>
+                                        <PaginationItem>
+                                            <PaginationNext href={`/produk?page=${Number(page) + 1}`} />
+                                        </PaginationItem>
+                                        <PaginationItem>
+                                            <PaginationLink href={`/produk?page=${Number(totalPages)}`} className="w-fit p-2.5 sm:hidden xl:block">Halaman Akhir</PaginationLink>
+                                        </PaginationItem>
+                                    </>
                                 )}
                             </PaginationContent>
                         </Pagination>
 
                     </CardFooter>
                 </Card>
-                <AddProductDialog dialog={{open, setOpen}} />
+                <AddProductDialog dialog={{ open, setOpen }} />
+                <Toaster duration={3000} />
             </main>
         </>
     )

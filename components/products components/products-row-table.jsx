@@ -14,12 +14,12 @@ import { Button } from "@/components/ui/button"
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { food } from "@/components/images"
-import { EditProductDialog } from "./products-dialog"
+import { EditProductDialog, RemoveProductDialog } from "./products-dialog"
 import { useState } from "react"
 
 const ProductsRowTable = ({ product }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
+    const [isEdit, setIsEdit] = useState(false);
+    const [isHapus, setIsHapus] = useState(false);
     // console.log(product)
     return (
         <>
@@ -46,12 +46,15 @@ const ProductsRowTable = ({ product }) => {
                             <DropdownMenuItem>
                                 <span onClick={()=>setIsOpen(true)}>Edit</span>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>Hapus</DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <span onClick={()=>setIsHapus(true)}>Hapus</span>
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </TableCell>
             </TableRow>
-            <EditProductDialog item={product} dialog={{isOpen, setIsOpen}}/>
+            <EditProductDialog item={product} dialog={{isEdit, setIsEdit}}/>
+            <RemoveProductDialog item={{id:product.id, nama: product.nama}} dialog={{isHapus, setIsHapus}}/>
         </>
     )
 }

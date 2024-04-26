@@ -38,7 +38,7 @@ const getAllTag = async ()=>{
 }
 
 const addProduct = async (product) => {
-    const { data, error } = await supabase.from('product').insert(product);
+    const { data, error } = await supabase.from('product').insert(product).select();
     if (error) throw error;
     return data;
 }

@@ -22,13 +22,18 @@ import { Button } from "@/components/ui/button"
 import { getAllTag } from "../supabase"
 import { useEffect, useState } from "react"
 import handleAddProduct from "@/components/actions"
+import { useFormState } from 'react-dom'
+import { useToast } from "@/components/ui/use-toast"
 
+const initialState = {
+    message: '',
+  }
 const EditProductDialog = ({dialog, item}) => {
     // console.log(item)
-    const {isOpen, setIsOpen} = dialog
+    const {isEdit, setIsEdit} = dialog
     return(
         <>
-            <Dialog open={isOpen} onOpenChange={()=> setIsOpen(!isOpen)}>
+            <Dialog open={isEdit} onOpenChange={()=> setIsEdit(!isEdit)}>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Edit Product</DialogTitle>
@@ -57,8 +62,20 @@ const AddProductDialog = ({dialog})=>{
     },[])
     const {open, setOpen} = dialog
     
+    const [state, formAction] = useFormState(handleAddProduct, initialState)
+    const { toast } = useToast()
     
-
+    useEffect(()=>{
+        const handleToast = async()=>{
+            if (state.status === 'success') {
+                toast({title: 'Berhasil!', description: JSON.stringify(state.message)})
+            } else if(state.status === 'error'){
+                toast({title: 'Gagal!', description: JSON.stringify(state.message.message).replace(/\\/g,'').replace(/"/g,'')})
+            }
+        }
+        handleToast()
+        
+    },[state, toast])
     return(
         <>
             <Dialog open={open} onOpenChange={()=> setOpen(!open)}>
@@ -66,7 +83,7 @@ const AddProductDialog = ({dialog})=>{
                     <DialogHeader>
                         <DialogTitle>Tambah Produk</DialogTitle>
                     </DialogHeader>
-                    <form action={handleAddProduct}>
+                    <form action={formAction}>
                         <div className="grid gap-4 py-4">
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="nama" className="text-right">Nama</Label>
@@ -112,8 +129,26 @@ const AddProductDialog = ({dialog})=>{
     )
 }
 
-const RemovePoductDialog = ({dialog, item})=>{
+const RemoveProductDialog = ({dialog, item})=>{
     const {isOpen, setIsOpen} = dialog
     const {id, nama} = item
+
+    return (
+        <>
+            <Dialog open={isOpen} onOpenChange={()=>setIsOpen(!isOpen)}>
+                <DialogContent className="sm:max-w-[512px]">
+                    <DialogHeader>
+                        <DialogTitle>Hapus Produk</DialogTitle>
+                        <DialogDescription>Apakah anda yakin ingin menghapus produk <strong>{nama}</strong>?</DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button size="sm" variant="ghost" onClick={()=>setIsOpen(!isOpen)}>Batal</Button>
+                        <Button size="sm" variant="danger">Hapus</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </>
+    )
 }
-export { EditProductDialog, AddProductDialog }
+
+export { EditProductDialog, AddProductDialog, RemoveProductDialog }

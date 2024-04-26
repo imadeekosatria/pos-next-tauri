@@ -1,7 +1,8 @@
 'use server'
 import { addProduct } from "@/components/supabase"
+import { revalidatePath } from "next/cache";
 
-export default async function handleAddProduct(formData){
+export default async function handleAddProduct(prevState, formData){
     let gambarName = formData.get('gambar').name === 'undefined' ? 'food.jpg' : formData.get('gambar').name;
     const rawFormData = {
         nama: formData.get('nama'),
@@ -10,6 +11,11 @@ export default async function handleAddProduct(formData){
         category_id: formData.get('category'),
         gambar: gambarName
     }
-    await addProduct(rawFormData)
-    
+    try {
+        await addProduct(rawFormData)
+        revalidatePath('/produk')
+        return {status: 'success', message: 'Produk berhasil ditambahkan'}
+    } catch (error) {
+        return {status: 'error', message: error}
+    }
 }
