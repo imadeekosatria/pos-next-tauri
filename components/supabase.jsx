@@ -24,9 +24,8 @@ const getPaginateProducts = async (page) => {
 }
 
 const getTagProducts = async (tag) => {
-const { data:product, error } = await supabase
-  .from('product')
-  .select(`*, category:category_id(name)`).eq('category_id', tag);
+    const { data:product, error } = await supabase
+    .from('product').select(`*, category:category_id(name)`).eq('category_id', tag);
     if (error) throw error;
     return product;
 
@@ -38,5 +37,11 @@ const getAllTag = async ()=>{
     return tag;
 }
 
+const addProduct = async (product) => {
+    const { data, error } = await supabase.from('product').insert(product);
+    if (error) throw error;
+    return data;
+}
 
-export { getAllProducts, getPaginateProducts, getTagProducts, getAllTag }
+
+export { getAllProducts, getPaginateProducts, getTagProducts, getAllTag, addProduct }

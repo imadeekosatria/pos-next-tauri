@@ -33,6 +33,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation"
 import { getPaginateProducts } from "@/components/supabase"
 import { ProductsRowTable } from "@/components/products components/products-row-table"
+import { AddProductDialog } from "@/components/products components/products-dialog";
 
 
 const Page = () => {
@@ -45,6 +46,9 @@ const Page = () => {
     const [totalData, setTotalData] = useState(0);
     const [startIndex, setStartIndex] = useState(0);
     const [endIndex, setEndIndex] = useState(0);
+
+    const [open, setOpen] = useState(false);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -75,7 +79,7 @@ const Page = () => {
                             <CardDescription>Daftar produk yang tersedia</CardDescription>
                         </div>
                         <div>
-                            <Button size="sm" className="flex gap-x-2">
+                            <Button size="sm" className="flex gap-x-2" onClick={()=>setOpen(true)}>
                                 <FontAwesomeIcon icon={faCirclePlus} size="lg" />
                                 <span>Tambah Produk</span>
                             </Button>
@@ -156,6 +160,7 @@ const Page = () => {
 
                     </CardFooter>
                 </Card>
+                <AddProductDialog dialog={{open, setOpen}} />
             </main>
         </>
     )

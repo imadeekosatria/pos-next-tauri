@@ -27,6 +27,7 @@ export default function Home() {
                 const category = await getAllTag()
                 setData(products)
                 setTag(category)
+                console.log(products)
             } catch (error) {
                 setError(error)
             }            

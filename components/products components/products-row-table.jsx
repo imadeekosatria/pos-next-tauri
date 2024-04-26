@@ -18,7 +18,7 @@ import { EditProductDialog } from "./products-dialog"
 import { useState } from "react"
 
 const ProductsRowTable = ({ product }) => {
-    const [open, setOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     // console.log(product)
     return (
@@ -43,13 +43,15 @@ const ProductsRowTable = ({ product }) => {
                         <DropdownMenuContent>
                             <DropdownMenuLabel>Aksi</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <span onClick={()=>setIsOpen(true)}>Edit</span>
+                            </DropdownMenuItem>
                             <DropdownMenuItem>Hapus</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </TableCell>
             </TableRow>
-            <EditProductDialog item={product} props={{open, setOpen}}/>
+            <EditProductDialog item={product} dialog={{isOpen, setIsOpen}}/>
         </>
     )
 }
