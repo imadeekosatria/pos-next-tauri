@@ -17,6 +17,8 @@ jobs:
             args: '--target i686-pc-windows-msvc'
           - platform: 'windows-latest'
             args: ''
+          - platform: 'ubuntu-latest'
+            args: ''
 
     runs-on: ${{ matrix.settings.platform }}
     env:
