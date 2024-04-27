@@ -21,9 +21,10 @@ import { Button } from "@/components/ui/button"
   
 import { getAllTag } from "../supabase"
 import { useEffect, useState } from "react"
-import handleAddProduct from "@/components/actions"
 import { useFormState } from 'react-dom'
 import { useToast } from "@/components/ui/use-toast"
+import { addProduct } from "@/components/supabase"
+
 
 const initialState = {
     message: '',
@@ -62,9 +63,29 @@ const AddProductDialog = ({dialog})=>{
     },[])
     const {open, setOpen} = dialog
     
-    const [state, formAction] = useFormState(handleAddProduct, initialState)
     const { toast } = useToast()
     
+    
+    const formSubmit = async (prevState, formData) => {
+        let gambarFile = formData.get('gambar');
+        let gambarName = gambarFile && gambarFile.name ? gambarFile.name : 'food.jpg';
+
+        const rawFormData = {
+            nama: formData.get('nama'),
+            harga: formData.get('harga'),
+            harga_satuan: formData.get('harga_satuan'),
+            category_id: formData.get('category'),
+            gambar: gambarName
+        }
+        try {
+            await addProduct(rawFormData)
+            return {status: 'success', message: 'Produk berhasil ditambahkan'}
+        } catch (error) {
+            return {status: 'error', message: error}
+        }
+    }
+    const [state, formAction] = useFormState(formSubmit, initialState)
+
     useEffect(()=>{
         const handleToast = async()=>{
             if (state.status === 'success') {
@@ -76,6 +97,7 @@ const AddProductDialog = ({dialog})=>{
         handleToast()
         
     },[state, toast])
+
     return(
         <>
             <Dialog open={open} onOpenChange={()=> setOpen(!open)}>
