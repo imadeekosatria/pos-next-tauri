@@ -20,6 +20,7 @@ import { useState } from "react"
 const ProductsRowTable = ({ product }) => {
     const [isEdit, setIsEdit] = useState(false);
     const [isHapus, setIsHapus] = useState(false);
+
     // console.log(product)
     return (
         <>
@@ -43,11 +44,11 @@ const ProductsRowTable = ({ product }) => {
                         <DropdownMenuContent>
                             <DropdownMenuLabel>Aksi</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                                <span onClick={()=>setIsOpen(true)}>Edit</span>
+                            <DropdownMenuItem onClick={()=>setIsEdit(true)}>
+                                Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <span onClick={()=>setIsHapus(true)}>Hapus</span>
+                            <DropdownMenuItem onClick={()=>setIsHapus(true)}>
+                                Hapus
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

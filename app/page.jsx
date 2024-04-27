@@ -24,7 +24,7 @@ export default function Home() {
         const fetchData = async () => {
             try {
                 const products = await getAllProducts()
-                const category = await getAllTag()
+                const category = await getAllTag(limit=4)
                 setData(products)
                 setTag(category)
                 console.log(products)
