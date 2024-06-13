@@ -3,7 +3,7 @@ import { CartDialog, CartItems, Buyer } from "@/app/ContextProvider";
 import { useContext, useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faTrashCan, faPlus, faMinus, faTicket } from "@fortawesome/free-solid-svg-icons";
+import { faXmark, faTrashCan, faPlus, faMinus, faTicket, faPrint, faCartShopping, faCircleMinus } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import food from '@/public/images/food.jpg';
 import {
@@ -13,82 +13,133 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { Button } from "./ui/button";
 import { DialogClose } from "@radix-ui/react-dialog";
-
-
-import {formattedPrice} from "@/utils/format"
+import { useToast } from "@/components/ui/use-toast"
+import { useReactToPrint } from "react-to-print";
+import { formattedPrice, formatDateTime, formattedDate, codeInvoice } from "@/utils/format"
+import { chekoutProduct } from "./supabase";
+import Invoice from "./invoice";
+import { ToastAction } from "./ui/toast";
 
 const Cart = () => {
     const { showCart, setShowCart } = useContext(CartDialog);
     const { cartItems, setCartItems } = useContext(CartItems);
     const { pembeli, setPembeli } = useContext(Buyer);
-
+    const { toast } = useToast()
     const [isCheckout, setIscheckout] = useState(false);
     const [subTotal, setSubTotal] = useState(0);
     const [total, setTotal] = useState(0);
-    const [discount, setDiscount] = useState(500);
-    const formattedDate = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const [discount, setDiscount] = useState(20000);
+    const [idInvoice, setIdInvoice] = useState()
+
+    // const date = new Date()
+    // const formattedDate = date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+    // const formattedTime = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Makassar' }) 
+    // const finalDateTime = `${formattedDate}, ${formattedTime} WITA`
 
     const messagesEndRef = useRef(null);
-
-    useEffect(()=>{
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    },[cartItems.length])
+    const componentRef = useRef(null);
     useEffect(() => {
-        
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [cartItems.length])
+    useEffect(() => {
+
         const newTotal = cartItems.reduce((sum, item) => sum + item.subtotal, 0);
         setSubTotal(newTotal);
         setTotal(newTotal - discount);
 
     }, [cartItems, discount]);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const code = await codeInvoice()
+            setIdInvoice(code)
+        }
+        fetchData()
+    }, [pembeli])
 
+    const [dataPrint, setDataPrint] = useState({});
     const handleCheckout = async () => {
+
         if (pembeli) {
             const data = {
-                pembeli: {
-                    nama: pembeli.nama || 'Admin',
-                    email: pembeli.email || '-',
-                    telepon: pembeli.telepon || '-',
-                    alamat: pembeli.alamat || '-',
-                    tanggal: formattedDate,
-                    items: cartItems,
-                    total: total,
-                }
+                nama: pembeli.nama || 'Admin',
+                email: pembeli.email || '-',
+                telepon: pembeli.telepon || '-',
+                alamat: pembeli.alamat || '-',
+                items: cartItems,
+                total: total,
+                discount: discount,
+                subtotal: subTotal,
+                code: idInvoice
             }
-
+            // console.log(data);
             try {
-                const response = await fetch('http://localhost:3001', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data),
-                });
+                await chekoutProduct(data);
+                let pembeliLocalStorage = JSON.parse(localStorage.getItem('pembeli')) || {};
+                // Retrieve pembeli from local storage and parse it to a JavaScript object
 
-                if (!response.ok) throw new Error('Network response was not ok');
+                // Add the properties
+                pembeliLocalStorage.tanggal = formatDateTime();
+                pembeliLocalStorage.items = cartItems;
+                pembeliLocalStorage.total = total;
+                pembeliLocalStorage.discount = discount;
+                pembeliLocalStorage.subtotal = subTotal;
+                pembeliLocalStorage.code = idInvoice;
 
-                const responseData = await response.json();
-                console.log(responseData);
+                // Store the updated pembeli object back to local storage
+                localStorage.setItem('pembeli', JSON.stringify(pembeliLocalStorage));
+                setDataPrint(pembeliLocalStorage);
+                // console.log(response)
+                toast({ title: 'Berhasil!', description: "Data berhasil di simpan", action: <ToastAction onClick={handlePrint} altText="Print">Print</ToastAction> });
+                
             } catch (error) {
-                console.error('Error:', error)
+                console.error(error);
+                toast({ variant: "destructive", title: `Gagal! ${error.code}`, description: error.message });
             }
+            setPembeli(null);
         } else {
             setIscheckout(!isCheckout);
         }
     };
+    const removeAllHandler = () => {
+        setCartItems([]);
+        setPembeli(null);
+        localStorage.setItem('cartItems', JSON.stringify([]));
+        localStorage.setItem('pembeli', JSON.stringify({}));
+    }
+
+    const handlePrint = useReactToPrint({
+        content: () => componentRef.current,
+    })
     return (
         <>
             <div className={cn(`${showCart ? 'bg-white w-full col-span-3 h-screen p-2 2xl:p-6 relative animate-slide-down' : 'hidden'}`)}>
                 <div className="flex flex-col gap-y-4">
                     <div className="flex justify-between items-center pl-2">
                         <span className="text-2xl font-semibold">Pesanan saat ini</span>
-                        <button className="" onClick={() => { setShowCart(!showCart) }}><FontAwesomeIcon icon={faXmark} fixedWidth style={{color:'#0f172a'}} size="xl"/></button>
+                        <button className="" onClick={() => { setShowCart(!showCart) }}><FontAwesomeIcon icon={faXmark} fixedWidth style={{ color: '#0f172a' }} size="xl" /></button>
                     </div>
-                    <div className="flex flex-col gap-y-2 text-xs 2xl:text-base font-medium pl-2">
-                        <span >Tanggal : {formattedDate}</span>
-                        <span >Code : 20240322</span>
+                    <div className="pl-2 flex justify-between items-center">
+                        <div className="flex flex-col gap-y-2 text-xs 2xl:text-base font-medium">
+                            <span >Tanggal : {formattedDate}</span>
+                            <span >Code : {idInvoice}</span>
+                        </div>
+                        <div>
+                            {cartItems.length > 0 &&
+                                <Button variant="outline" size="icon" className="bg-red-500" style={{ color: '#ffffff' }} fixedWidth onClick={removeAllHandler}>
+                                    <FontAwesomeIcon icon={faTrashCan} />
+                                </Button>
+                            }
+                        </div>
                     </div>
                     <div className="2xl:h-[30rem] h-[17rem] overflow-y-auto hoverable py-2 pr-4">
                         {cartItems && cartItems.length > 0 ? (
@@ -104,6 +155,9 @@ const Cart = () => {
                         )}
                         <div ref={messagesEndRef}></div>
                     </div>
+                </div>
+                <div className="hidden">
+                    <Invoice data={dataPrint} ref={componentRef} />
                 </div>
                 <div className="flex flex-col gap-y-4 w-11/12 rounded-lg absolute bottom-4">
                     {/* <div className="bg-white flex items-center px-1 2xl:px-2 justify-between relative w-full py-0.5 rounded-lg">
@@ -129,10 +183,35 @@ const Cart = () => {
                             <span>{formattedPrice(total)}</span>
                         </div>
                     </div>
-                    <button className="bg-blue-700 p-4 w-full text-2xl text-white font-medium rounded-lg" onClick={handleCheckout}>Cetak Pesanan</button>
+                    <div className="grid grid-cols-6 gap-x-2">
+                        <div className="col-span-2 flex align-middle justify-center bg-slate-300 rounded-lg">
+                            <TooltipProvider delayDuration={200}>
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <div onClick={handlePrint}><FontAwesomeIcon icon={faPrint} style={{ color: '#ffffff' }} size="2x" /></div>
+                                    </TooltipTrigger>
+                                    <TooltipContent >
+                                        Print
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        </div>
+                        <div className="bg-blue-700 p-4 w-full flex justify-center items-center text-2xl text-white font-medium rounded-lg col-span-4">
+                            <TooltipProvider delayDuration={200}>
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <div onClick={handleCheckout} className="flex gap-x-2 items-center"><FontAwesomeIcon icon={faCartShopping} />Chekout</div>
+                                    </TooltipTrigger>
+                                    <TooltipContent >
+                                        Checkout
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <DialogCheckout isOpen={{ isCheckout, setIscheckout, setPembeli }} />
+            <DialogCheckout isOpen={{ isCheckout, setIscheckout, setPembeli, handleCheckout }} />
         </>
     )
 }
@@ -177,17 +256,17 @@ const CartItem = ({ items }) => {
         localStorage.setItem('cartItems', JSON.stringify(newCartItems));
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         const updatedItem = cartItems.find(cartItem => cartItem.id === item.id && cartItem.price === item.price);
         if (updatedItem) {
             setItemCount(updatedItem.qty);
         }
-    },[cartItems, item.id, item.price])
+    }, [cartItems, item.id, item.price])
     return (
         <>
             <div className="shadow-lg relative rounded-lg p-2.5 animate-slide-up mb-4 ">
-                <button className="absolute bg-red-500 -top-2 -right-2.5 px-1.5 py-1 2xl:px-2.5 2xl:py-2 rounded-full hover:bg-blue-600" onClick={() => handleRemove(item.id, item.price)}>
-                    <FontAwesomeIcon icon={faTrashCan} style={{ color: '#ffffff' }} fixedWidth />
+                <button className="absolute bg-blue-700 -top-2 -right-2.5 px-1.5 py-1 2xl:px-1.5 2xl:py-1 rounded-lg hover:bg-blue-600" onClick={() => handleRemove(item.id, item.price)}>
+                    <FontAwesomeIcon icon={faCircleMinus} style={{ color: '#ffffff' }} fixedWidth />
                 </button>
                 <div className="flex gap-x-3 w-full">
                     <div className="2xl:w-20 w-16">
@@ -199,7 +278,7 @@ const CartItem = ({ items }) => {
                         <div className="2xl:absolute 2xl:bottom-0 flex gap-x-3 justify-between items-end w-full">
                             <span className="text-xs 2xl:text-base font-bold text-blue-700">{formattedPrice(item.price)}</span>
                             <div className="flex w-28 justify-between">
-                                <button className="bg-slate-300 rounded-md px-1 hover:bg-slate-200"><FontAwesomeIcon icon={faTicket}/></button>
+                                <button className="bg-slate-300 rounded-md px-1 hover:bg-slate-200"><FontAwesomeIcon icon={faTicket} /></button>
                                 <button className="bg-slate-300 rounded-md px-1 hover:bg-slate-200" onClick={minus}><FontAwesomeIcon icon={faMinus} /></button>
                                 <span>{itemCount}</span>
                                 <button className="bg-blue-700 hover:bg-blue-600 rounded-md px-1" onClick={plus}><FontAwesomeIcon icon={faPlus} style={{ color: '#ffffff' }} /></button>
@@ -243,7 +322,7 @@ const DialogDelete = ({ isOpen, item }) => {
 }
 
 const DialogCheckout = ({ isOpen }) => {
-    const { isCheckout, setIscheckout, setPembeli } = isOpen;
+    const { isCheckout, setIscheckout, setPembeli, handleCheckout } = isOpen;
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
@@ -259,6 +338,7 @@ const DialogCheckout = ({ isOpen }) => {
         }
         setPembeli(pembeli);
         setIscheckout(!isCheckout);
+        localStorage.setItem('pembeli', JSON.stringify(pembeli));
     }
     return (
         <>
@@ -269,7 +349,7 @@ const DialogCheckout = ({ isOpen }) => {
                             Checkout
                         </DialogTitle>
                         <DialogDescription>
-                            Silahkan isi data pemesan
+                            Silahkan isi data pemesan sebelum melakukan checkout
                         </DialogDescription>
                     </DialogHeader>
                     <form action="" method="post" onSubmit={handleSubmit}>
@@ -283,7 +363,7 @@ const DialogCheckout = ({ isOpen }) => {
                             <DialogClose asChild>
                                 <Button variant="secondary">Batal</Button>
                             </DialogClose>
-                            <Button type="submit">Checkout</Button>
+                            <Button type="submit">Simpan</Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>

@@ -1,6 +1,6 @@
 'use client'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCircleUser, faHouse, faTicket, faBoxArchive, faMoon } from "@fortawesome/free-solid-svg-icons"
+import { faCircleUser, faHouse, faTicket, faBoxArchive, faMoon, faArrowsRotate } from "@fortawesome/free-solid-svg-icons"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
@@ -91,7 +91,7 @@ const TopNav = ({ cartItems, setShowCart }) => {
         <div className="flex justify-between gap-x-4 items-center">
           <input type="text" placeholder="Cari produk" name="searchProduk" className="bg-white w-96 px-4 py-2 rounded-full focus:outline-slate-400 placeholder:text-slate-400" />
           <div className="flex items-center gap-x-4 lg:gap-x-8">
-            <FontAwesomeIcon icon={faMoon} fixedWidth className="cursor-pointer bg-slate-50 p-2 rounded-full" />
+            <button onClick={() => window.location.reload()}><FontAwesomeIcon icon={faArrowsRotate} /></button>
             {(pathname === "/") && (
               <button className="relative" onClick={() => { setShowCart(true) }} aria-label="cart">
                 <ShoppingCart />

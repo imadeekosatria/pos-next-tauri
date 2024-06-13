@@ -79,12 +79,23 @@
 .hoverable::-webkit-scrollbar {
     width: 10px;
 }
+
+.tagHover::-webkit-scrollbar {
+    height: 6px;
+}
  
 /* Track */
 .hoverable::-webkit-scrollbar-track {
     background: transparent;
 }
 .hoverable:hover::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.tagHover::-webkit-scrollbar-track {
+    background: transparent;
+}
+.tagHover:hover::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
 
@@ -98,8 +109,22 @@
     background: #888;
     border-radius: 5px;
 }
+
+.tagHover::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 5px;
+}
+
+.tagHover:hover::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
  
 /* Handle on hover */
 .hoverable::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.tagHover::-webkit-scrollbar-thumb:hover {
     background: #555;
 }

@@ -32,17 +32,12 @@ const getTagProducts = async (tag) => {
 }
 
 const getAllTag = async (limit)=>{
-    if (limit) {
-        const { data: tag, error } = await supabase.from('category').select().order('created_at', { ascending: false }).limit(4);
-        
-        if (error) throw error;
-        return tag;
-    }else{
-        const { data: tag, error } = await supabase.from('category').select().order('created_at', { ascending: false });
-        
-        if (error) throw error;
-        return tag;
+    const { data: tag, error } = await supabase.from('category').select().order('created_at', { ascending: false });
+    if (limit && tag.length > limit) {
+        tag.splice(limit);
     }
+    if (error) throw error;
+    return tag;
 }
 
 const addProduct = async (product) => {
@@ -65,8 +60,20 @@ const updateProduct = async (id, product) => {
 
 const countProduct = async () => {
     const { count, error } = await supabase.from('product').select('*', {count: 'exact', head: true});
-    if (error) throw error;
-    return count;
+    if (error) throw error
+    return count
 }
 
-export { getAllProducts, getPaginateProducts, getTagProducts, getAllTag, addProduct, deleteProduct, updateProduct, countProduct }
+const chekoutProduct = async (product) => {
+    const { error, status, statusText} = await supabase.from('checkout').insert(product)
+    if (error) throw error
+    return {status, statusText}
+}
+
+const countChekoutProduct = async () => {
+    const {count, error} = await supabase.from('checkout').select('created_at, code', {count: 'exact', head: true})
+    if (error) throw error
+    return count
+}
+
+export { getAllProducts, getPaginateProducts, getTagProducts, getAllTag, addProduct, deleteProduct, updateProduct, countProduct, chekoutProduct, countChekoutProduct }

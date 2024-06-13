@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { CartDialog, CartItems } from "@/app/ContextProvider";
 import { TopNav } from "@/components/nav";
 import { getAllProducts, getAllTag, getTagProducts } from "@/components/supabase";
+import { NoData } from "@/components/products components/products-errorload";
 
 const ProdukCard = dynamic(() => import('@/components/products components/products-card'), { ssr: false });
 const ProductsLoader = dynamic(() => import('@/components/products components/products-loader'));
@@ -24,10 +25,10 @@ export default function Home() {
         const fetchData = async () => {
             try {
                 const products = await getAllProducts()
-                const category = await getAllTag(limit=4)
+                const category = await getAllTag(4)
                 setData(products)
                 setTag(category)
-                console.log(products)
+                // console.log(products)
             } catch (error) {
                 setError(error)
             }            
@@ -50,7 +51,7 @@ export default function Home() {
         <>
             <main className={cn("p-2 h-screen transition-all duration-500 ease-in-out", `${showCart ? 'col-span-8' : 'col-span-11'}`)}>
                 <TopNav cartItems={cartItems} setShowCart={setShowCart}/>
-                <div className="flex w-full gap-x-4 lg:gap-x-6 mt-8">
+                <div className="flex w-full gap-x-4 lg:gap-x-6 mt-8 overflow-x-scroll tagHover py-2">
                         <button className={cn('bg-white px-6 py-1 text-nowrap rounded-full shadow-lg hover:bg-slate-200 cursor-pointer', currentTag === 'All' ? 'bg-blue-700 text-white font-semibold hover:bg-blue-700' : '')} onClick={(e)=>{setCurrentTag(e.target.innerText); tagHandler('All')}}>All</button>
                         {tag.map((item) => (
                             <button key={item.id} className={cn('bg-white px-6 py-1 text-nowrap rounded-full shadow-lg hover:bg-slate-200 cursor-pointer', item.name === currentTag ? 'bg-blue-700 text-white font-semibold hover:bg-blue-700' : '')} onClick={(e)=> {setCurrentTag(e.target.innerText); tagHandler(item.id)}}>{item.name}</button>
@@ -65,7 +66,13 @@ export default function Home() {
                         [...Array(4)].map((_, index) => (
                             <ProductsLoader key={index} />
                         ))
-                    ) : (data.map((item) => {
+                    ) 
+                    : data.length === 0 ? (
+                        <div className={showCart ? 'col-span-3 2xl:col-span-4' : 'col-span-4 2xl:col-span-6'}>
+                            <NoData/>
+                        </div>
+                    )
+                    : (data.map((item) => {
                         return (
                             <ProdukCard key={item.id} cart={{ showCart, setShowCart, cartItems, setCartItems }} data={item} />
                         )

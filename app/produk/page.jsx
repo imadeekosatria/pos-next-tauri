@@ -34,7 +34,6 @@ import { useSearchParams } from "next/navigation"
 import { countProduct, getPaginateProducts } from "@/components/supabase"
 import { ProductsRowTable } from "@/components/products components/products-row-table"
 import { AddProductDialog } from "@/components/products components/products-dialog";
-import { Toaster } from "@/components/ui/toaster"
 import useSWR from "swr";
 
 const fetcher = (...args) => fetch(...args).then(res => res.json())
@@ -211,7 +210,6 @@ const Page = () => {
                     </CardFooter>
                 </Card>
                 <AddProductDialog dialog={{ open, setOpen }} />
-                <Toaster duration={3000} />
             </main>
         </>
     )

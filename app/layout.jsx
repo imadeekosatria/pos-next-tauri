@@ -3,6 +3,8 @@ import "./globals.css";
 import ContextProvider from "./ContextProvider";
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
+import { Toaster } from "@/components/ui/toaster"
+
 config.autoAddCss = false
 
 
@@ -25,6 +27,7 @@ export default function RootLayout({ children }) {
         <ContextProvider>
           {children}
         </ContextProvider>
+        <Toaster duration={3000} />
       </body>
     </html>
   );

@@ -20,6 +20,7 @@ const ContextProvider = ({ children }) => {
 
     return (
         <>
+            {/* <div className="h-fit w-full bg-slate-200"> */}
             <div className="h-fit grid grid-cols-12 w-full bg-slate-200">
                 <SideNav />
                 <CartDialog.Provider value={{ showCart, setShowCart }}>
