@@ -51,13 +51,13 @@ export default function Home() {
         <>
             <main className={cn("p-2 h-screen transition-all duration-500 ease-in-out", `${showCart ? 'col-span-8' : 'col-span-11'}`)}>
                 <TopNav cartItems={cartItems} setShowCart={setShowCart}/>
-                <div className="flex w-full gap-x-4 lg:gap-x-6 mt-8 overflow-x-scroll tagHover py-2">
-                        <button className={cn('bg-white px-6 py-1 text-nowrap rounded-full shadow-lg hover:bg-slate-200 cursor-pointer', currentTag === 'All' ? 'bg-blue-700 text-white font-semibold hover:bg-blue-700' : '')} onClick={(e)=>{setCurrentTag(e.target.innerText); tagHandler('All')}}>All</button>
+                <div className="flex w-full gap-x-4 lg:gap-x-6 mt-8 overflow-x-scroll tagHover py-4">
+                        <button className={cn('bg-white px-6 py-1 text-nowrap rounded-full hover:bg-slate-200 cursor-pointer', currentTag === 'All' ? 'bg-blue-700 text-white font-semibold hover:bg-blue-700' : '')} onClick={(e)=>{setCurrentTag(e.target.innerText); tagHandler('All')}}>All</button>
                         {tag.map((item) => (
-                            <button key={item.id} className={cn('bg-white px-6 py-1 text-nowrap rounded-full shadow-lg hover:bg-slate-200 cursor-pointer', item.name === currentTag ? 'bg-blue-700 text-white font-semibold hover:bg-blue-700' : '')} onClick={(e)=> {setCurrentTag(e.target.innerText); tagHandler(item.id)}}>{item.name}</button>
+                            <button key={item.id} className={cn('bg-white px-6 py-1 text-nowrap rounded-full hover:bg-slate-200 cursor-pointer', item.name === currentTag ? 'bg-blue-700 text-white font-semibold hover:bg-blue-700' : '')} onClick={(e)=> {setCurrentTag(e.target.innerText); tagHandler(item.id)}}>{item.name}</button>
                         ))}
                 </div>
-                <div className={cn("mt-5 grid gap-x-2 2xl:gap-4 pr-2 gap-y-4 h-4/5 2xl:max-h-[48rem] hoverable overflow-y-scroll", `${showCart ? 'grid-cols-3 2xl:grid-cols-4' : 'grid-cols-4 2xl:grid-cols-6'}`)}>
+                <div className={cn("mt-5 grid gap-x-2 2xl:gap-4 pr-2 gap-y-4 h-3/5 2xl:max-h-[48rem] hoverable overflow-y-scroll", `${showCart ? 'grid-cols-3 2xl:grid-cols-4' : 'grid-cols-4 2xl:grid-cols-6'}`)}>
                     {error ? (
                         <div className={showCart ? 'col-span-3 2xl:col-span-4' : 'col-span-4 2xl:col-span-6'}>
                             <ErrorLoadProducts error={error}/>

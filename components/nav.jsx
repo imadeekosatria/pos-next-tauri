@@ -1,6 +1,6 @@
 'use client'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCircleUser, faHouse, faTicket, faBoxArchive, faMoon, faArrowsRotate } from "@fortawesome/free-solid-svg-icons"
+import { faCircleUser, faHouse, faTicket, faBoxArchive, faArrowsRotate, faAddressCard } from "@fortawesome/free-solid-svg-icons"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
@@ -35,6 +35,11 @@ const link = [
     name: "Produk",
     path: "/produk",
     icon: faBoxArchive
+  },
+  {
+    name: "Member",
+    path: "/member",
+    icon: faAddressCard
   }
 ]
 const SideNav = () => {
@@ -42,12 +47,12 @@ const SideNav = () => {
   return (
     <>
       <div className="relative z-10">
-        <nav className="bg-white w-16 lg:w-20 col-start-1 h-screen fixed">
+        <nav className="bg-white w-14 lg:w-16 col-start-1 h-screen fixed">
           <div className="w-full flex justify-center py-8">
             <TooltipProvider delayDuration={200}>
               <Tooltip>
                 <TooltipTrigger aria-label="User">
-                  <FontAwesomeIcon icon={faCircleUser} style={{ color: '#64748b' }} size="3x"/>
+                  <FontAwesomeIcon icon={faCircleUser} style={{ color: '#64748b' }} size="2x" />
                 </TooltipTrigger>
                 <TooltipContent side={"right"}>
                   User
@@ -64,7 +69,7 @@ const SideNav = () => {
                     <TooltipTrigger aria-label={item.name}>
                       <div key={index} className={`${pathname === item.path ? 'bg-blue-300 px-0.5 py-1 lg:p-2' : 'hover:bg-slate-300 px-0.5 py-1 lg:p-2'} rounded-lg`}>
                         <Link href={item.path} aria-label={item.name}>
-                          <FontAwesomeIcon icon={item.icon} fixedWidth={true} size="2x" className={`${pathname === item.path ? "text-white" : "text-slate-500"}`} />
+                          <FontAwesomeIcon icon={item.icon} fixedWidth={true} size="xl" className={`${pathname === item.path ? "text-white" : "text-slate-500"}`} />
                         </Link>
                       </div>
                     </TooltipTrigger>
@@ -84,7 +89,6 @@ const SideNav = () => {
 
 const TopNav = ({ cartItems, setShowCart }) => {
   const pathname = usePathname();
-  const linkName = link.find(item => item.path === pathname)?.name;
   return (
     <>
       <div className="relative">
@@ -102,21 +106,29 @@ const TopNav = ({ cartItems, setShowCart }) => {
           </div>
         </div>
         {(pathname !== "/") && (
-          <Breadcrumb className="hidden md:flex px-0.5 py-4">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/">Beranda</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{linkName}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <BreadcrumbNav />
         )}
       </div>
     </>
   )
 }
 
-export { SideNav, TopNav };
+const BreadcrumbNav = () => {
+  const pathname = usePathname();
+  const linkName = link.find(item => item.path === pathname)?.name;
+  return (
+    <Breadcrumb className="hidden md:flex px-0.5 py-4">
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/">Beranda</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbPage>{linkName}</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+  )
+}
+
+export { SideNav, TopNav, BreadcrumbNav };
