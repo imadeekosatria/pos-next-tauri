@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import { useFormState } from 'react-dom'
 import { useToast } from "@/components/ui/use-toast"
-import { addProduct, deleteProduct, updateProduct, getAllTag } from "@/components/supabase"
+import { addProduct, deleteProduct, updateProduct, getAllTag, uploadFile } from "@/components/supabase"
 
 
 const initialState = {
@@ -151,7 +151,7 @@ const AddProductDialog = ({dialog})=>{
     const formSubmit = async (prevState, formData) => {
         let gambarFile = formData.get('gambar');
         let gambarName = gambarFile && gambarFile.name ? gambarFile.name : 'food.jpg';
-
+        // console.log(gambarFile)
         const rawFormData = {
             nama: formData.get('nama'),
             harga: formData.get('harga'),
@@ -165,6 +165,7 @@ const AddProductDialog = ({dialog})=>{
         }
         try {
             await addProduct(rawFormData)
+            await uploadFile(gambarFile, gambarName)
             setTimeout(() => {
                 window.location.reload();
             }, 3000);
@@ -194,7 +195,7 @@ const AddProductDialog = ({dialog})=>{
                     <DialogHeader>
                         <DialogTitle>Tambah Produk</DialogTitle>
                     </DialogHeader>
-                    <form action={formAction}>
+                    <form action={formAction} encType="multipart/form-data">
                         <div className="grid gap-4 py-4">
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="nama" className="text-right">Nama</Label>
@@ -235,7 +236,7 @@ const AddProductDialog = ({dialog})=>{
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="gambar" className="text-right">Gambar</Label>
-                                <Input type="file" id="gambar" name="gambar" className="col-span-3" accept="image/jpeg,image/png"></Input>  
+                                <Input type="file" id="gambar" name="gambar" className="col-span-3" accept="image/*"></Input>  
                             </div>
                         </div>
                         <DialogFooter>

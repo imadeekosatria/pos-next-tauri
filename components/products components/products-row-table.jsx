@@ -15,18 +15,25 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { food } from "@/components/images"
 import { EditProductDialog, RemoveProductDialog } from "./products-dialog"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { productImage } from "../supabase"
 
 const ProductsRowTable = ({ product }) => {
     const [isEdit, setIsEdit] = useState(false);
     const [isHapus, setIsHapus] = useState(false);
-
-    // console.log(product)
+    const [image, setImage] = useState(food)
+    useEffect(() => {
+        productImage(product.gambar).then((data) => {
+            setImage(data)
+        }).catch((error) => {
+            console.log(error)
+        })
+    }, [product.gambar])
     return (
         <>
             <TableRow>
                 <TableCell className="hidden md:table-cell">
-                    <Image src={food} alt="produk" width={64} height={64} priority/>
+                    <Image src={image} alt="produk" width={64} height={64} priority/>
                 </TableCell>
                 <TableCell className="font-medium">{product.nama}</TableCell>
                 <TableCell className="hidden md:table-cell">{formattedPrice(product.harga)}</TableCell>

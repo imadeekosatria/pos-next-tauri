@@ -76,4 +76,16 @@ const countChekoutProduct = async () => {
     return count
 }
 
-export { getAllProducts, getPaginateProducts, getTagProducts, getAllTag, addProduct, deleteProduct, updateProduct, countProduct, chekoutProduct, countChekoutProduct }
+const uploadFile = async (file, name) =>{
+    console.log(file, name)
+    const {data, error} = await supabase.storage.from('pos_bucket').upload(`produk/${name}`, file)
+    if (error) throw error
+    return data
+}
+
+const productImage = async (name) =>{
+    const {data: url} = await supabase.storage.from('pos_bucket').getPublicUrl(`produk/${name}`)
+    return url.publicUrl
+}
+
+export { getAllProducts, getPaginateProducts, getTagProducts, getAllTag, addProduct, deleteProduct, updateProduct, countProduct, chekoutProduct, countChekoutProduct, uploadFile, productImage }
