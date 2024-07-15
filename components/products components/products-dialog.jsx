@@ -157,10 +157,17 @@ const AddProductDialog = ({dialog})=>{
             harga: formData.get('harga'),
             harga_satuan: formData.get('harga_satuan'),
             category_id: formData.get('category'),
-            gambar: gambarName
+            gambar: gambarName,
+            satuan: {
+                pack: formData.get('pack').toLowerCase(), 
+                satuan: formData.get('jenis_satuan').toLowerCase()
+            }
         }
         try {
             await addProduct(rawFormData)
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
             return {status: 'success', message: 'Produk berhasil ditambahkan'}
         } catch (error) {
             return {status: 'error', message: error}
@@ -169,16 +176,16 @@ const AddProductDialog = ({dialog})=>{
     const [state, formAction] = useFormState(formSubmit, initialState)
 
     useEffect(() => {
-    const handleToast = async () => {
-        if (state.status === 'success') {
-            setOpen(prevOpen => prevOpen ? false : prevOpen);
-            toast({ title: 'Berhasil!', description: JSON.stringify(state.message) });
-        } else if (state.status === 'error') {
-            toast({ title: 'Gagal!', description: JSON.stringify(state.message.message).replace(/\\/g, '').replace(/"/g, '') });
+        const handleToast = async () => {
+            if (state.status === 'success') {
+                setOpen(prevOpen => prevOpen ? false : prevOpen);
+                toast({ title: 'Berhasil!', description: JSON.stringify(state.message) });
+            } else if (state.status === 'error') {
+                toast({ title: 'Gagal!', description: JSON.stringify(state.message.message).replace(/\\/g, '').replace(/"/g, '') });
+            }
         }
-    }
-    handleToast();
-}, [state, toast, setOpen]);
+        handleToast();
+    }, [state, toast, setOpen]);
 
     return(
         <>
@@ -194,12 +201,20 @@ const AddProductDialog = ({dialog})=>{
                                 <Input type="text" id="nama" name="nama" placeholder="Nama Produk" className="col-span-3" required></Input>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="harga" className="text-right">Harga</Label>
-                                <Input type="number" id="harga" name="harga" placeholder="Harga Produk" className="col-span-3" required></Input>
+                                <Label htmlFor="harga" className="text-right">Harga per Pack</Label>
+                                <Input type="number" id="harga" name="harga" min={0} placeholder="Harga Produk" className="col-span-3" required></Input>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="harga_satuan" className="text-right">Harga Satuan</Label>
-                                <Input type="number" id="harga_satuan" name="harga_satuan" placeholder="Harga Satuan" className="col-span-3" required></Input>
+                                <Label htmlFor="pack" className="text-right">Jenis Pack</Label>
+                                <Input type="text" id="pack" name="pack" placeholder="(e.g Dus/Box besar/Renteng)" className="col-span-3" required></Input>
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="harga_satuan" className="text-right">Harga per Satuan</Label>
+                                <Input type="number" id="harga_satuan" min={0} name="harga_satuan" placeholder="Harga Satuan" className="col-span-3" required></Input>
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="jenis_satuan" className="text-right">Jenis Satuan</Label>
+                                <Input type="text" id="jenis_satuan" name="jenis_satuan" placeholder="(e.g. Sachet/botol/kotak)" className="col-span-3" required></Input>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="category" className="text-right">Kategori</Label>

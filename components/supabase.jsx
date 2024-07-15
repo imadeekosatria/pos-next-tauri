@@ -14,7 +14,7 @@ const getPaginateProducts = async (page) => {
     const startIndex = (page - 1) * productsPerPage;
     const endIndex = startIndex + productsPerPage - 1;
     const { count, error:countError } = await supabase.from('product').select('*', {count: 'exact', head: true});
-    const { data:product, error } = await supabase.from('product').select(`*, category:category_id(name)`).range(startIndex, endIndex).order('created_at', { ascending: false });
+    let { data:product, error } = await supabase.from('product').select(`*, category:category_id(name)`).range(startIndex, endIndex).order('created_at', { ascending: false });
     
     if (error || countError ) throw error || countError;
     

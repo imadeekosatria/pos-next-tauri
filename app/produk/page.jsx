@@ -31,12 +31,11 @@ import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation"
-import { countProduct, getPaginateProducts } from "@/components/supabase"
+import { getPaginateProducts } from "@/components/supabase"
 import { ProductsRowTable } from "@/components/products components/products-row-table"
 import { AddProductDialog } from "@/components/products components/products-dialog";
-import useSWR from "swr";
 
-const fetcher = (...args) => fetch(...args).then(res => res.json())
+// const fetcher = (...args) => fetch(...args).then(res => res.json())
 
 const Page = () => {
     const searchParams = useSearchParams();
@@ -69,23 +68,6 @@ const Page = () => {
         fetchData()
     }, [page])
 
-    //Use SWR
-    // const select = encodeURIComponent('*,category:category_id(name)')
-    // const order = encodeURIComponent('created_at.desc')
-    // const { data, error, isLoading } = useSWR(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/product?select=${select}&apikey=${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}&offset=${startIndex}&limit=${endIndex}`, fetcher, {refreshInterval: 3000})
-    // useEffect(()=>{
-    //     const productsPerPage = 5
-    //     const count = async ()=>{
-    //         return await countProduct()
-    //     }
-    //     if(data){
-    //         setStartIndex((page - 1) * productsPerPage)
-    //         setEndIndex(startIndex + productsPerPage - 1)
-    //         setTotalPages(Math.ceil(count / productsPerPage))
-    //         setTotalData(count)
-    //     }
-    // },[data, page, startIndex])
-    // console.log(data)
 
     return (
         <>
