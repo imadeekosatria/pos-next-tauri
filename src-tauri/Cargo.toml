@@ -1,7 +1,7 @@
 [package]
-name = "Aplikasi POS Next Tauri"
+name = "app-pos-next-tauri"
 version = "0.1.4"
-description = "POS App"
+description = "POS App created with Tauri & Next.js"
 authors = ["imadeekosatria"]
 license = ""
 repository = ""
